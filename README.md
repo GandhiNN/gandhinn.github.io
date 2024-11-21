@@ -1,2 +1,2 @@
-# gandhinn.github.io
+# GandhiNN GitHub Pages
 Testing GitHub pages
