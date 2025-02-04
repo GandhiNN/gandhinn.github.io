@@ -11,6 +11,3 @@ I consider myself vendor agnostic and I am a keen cutting edge and open-source t
 Many people think of me as highly proficient with IT infrastructure, mobile networking, system administration, and data platform / integration. 
 
 I like to go low but also very capable to go high. 
-
-Please contact me at:
-email: n.nyoman.gandhi@gmail.com  
