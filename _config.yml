@@ -34,9 +34,11 @@ url: https://gandhinn.github.io
 show_excerpts: true
 
 # Build settings
-theme: minima
+# theme: minima
+remote_theme: "mmistakes/minimal-mistakes@4.26.2"
 plugins:
   - jekyll-feed
+  - jekyll-include-cache
 
 # List of keywords
 category-list: [code, unix, linux, rust, python, go]
