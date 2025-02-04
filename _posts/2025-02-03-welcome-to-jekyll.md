@@ -1,5 +1,4 @@
 ---
-layout: post
 title:  "Yet another blog site"
 date:   2025-02-03 17:15:20 +0700
 categories: jekyll update
