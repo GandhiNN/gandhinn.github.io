@@ -136,3 +136,5 @@ tag_archive:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+exclude:
+  - backup/
