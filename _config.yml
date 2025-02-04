@@ -23,7 +23,7 @@
 title: Gandhi's Musings
 email: n.nyoman.gandhi@gandhi.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Welcome to Gandhi's musings. This is a blog about software engineering, 
+  Welcome! This is a blog about software engineering, 
   lessons learned, and slice of life i've accumulated during my journey to become
   an IT craftsman.
 baseurl: "" # the subpath of your site, e.g. /blog
@@ -31,11 +31,15 @@ twitter_username: Gandhi_NN
 github_username:  GandhiNN
 domain: gandhinn.github.io
 url: https://gandhinn.github.io
+show_excerpts: true
 
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
+
+# List of keywords
+category-list: [code, unix, linux, rust, python, go]
 
 # Exclude from processing.
 # The following items will not be processed, by default.
