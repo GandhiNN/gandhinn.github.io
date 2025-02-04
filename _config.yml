@@ -62,9 +62,9 @@ category-list: [code, unix, linux, rust, python, go]
 
 author:
   name   : "Ngakan Gandhi"
-  avatar : "/assets/images/bio-photo.jpg"
+  avatar : "/assets/images/foto.jpg"
   bio    : >
-   IT Solution Expert @PMI. 
+   IT Solution Expert @ Philip Morris International. 
    Opinions expressed here are my own.
   links:
     - label: "Website"
