@@ -61,34 +61,30 @@ include:
 category-list: [code, unix, linux, rust, python, go]
 
 author:
-  name   : "First Lastname"
+  name   : "Ngakan Gandhi"
   avatar : "/assets/images/bio-photo.jpg"
-  bio    : "My awesome biography constrained to a sentence or two goes here."
+  bio    : >
+   IT Solution Expert @PMI. 
+   Opinions expressed here are my own.
   links:
     - label: "Website"
       icon: "fas fa-fw fa-link"
-      url: "https://"
-    - label: "Twitter"
+      url: "https://gandhinn.github.io"
+    - label: "Twitter/X"
       icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
+      url: "https://x.com/gandhi_nn"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+      url: "https://github.com/GandhiNN"
 
 footer:
   links:
-    - label: "Twitter"
+    - label: "Twitter/X"
       icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/"
+      url: "https://x.com/gandhi_nn"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
-      url: "https://instagram.com/"
+      url: "https://github.com/GandhiNN"
 
 defaults:
   # _posts
