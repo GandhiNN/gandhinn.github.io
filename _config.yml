@@ -64,10 +64,9 @@ category-list: [Code, Unix, Linux, Rust, Python, Go]
 author:
   name   : "Ngakan Gandhi"
   avatar : "/assets/images/foto.jpg"
-  bio    : >
-   IT Solution Expert @ Philip Morris International. 
-   Speaks in Command-Line Interface. 
-   The opinions shared here do not represent the views of the employers.
+  bio    : |+
+   IT Solution Expert @ Philip Morris International.
+   The opinions shared here are my own.
   location: "Jakarta, Indonesia"
   links:
     - label: "Website"
