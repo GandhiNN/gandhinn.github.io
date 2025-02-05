@@ -66,6 +66,7 @@ author:
   bio    : >
    IT Solution Expert @ Philip Morris International. 
    The opinions shared here are my own.
+  location: "Jakarta, Indonesia"
   links:
     - label: "Website"
       icon: "fas fa-fw fa-link"
@@ -105,6 +106,13 @@ defaults:
     values:
       layout: single
       author_profile: true
+
+comments:
+  provider: "utterances"
+  utterances:
+    theme: "github-light"
+    issue_term: "pathname"
+    label: "💬 Comments"
 
 category_archive:
   type: liquid
