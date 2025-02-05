@@ -108,11 +108,11 @@ defaults:
       author_profile: true
 
 comments:
-  provider: "utterances"
-  utterances:
-    theme: "github-light"
-    issue_term: "pathname"
-    label: "💬 Comments"
+  provider: "facebook"
+  facebook:
+    appid: 
+    num_posts: 5
+    colorscheme: "light"
 
 category_archive:
   type: liquid
