@@ -58,7 +58,7 @@ include:
   - _pages
 
 # List of keywords
-category-list: [code, unix, linux, rust, python, go]
+category-list: [Code, Unix, Linux, Rust, Python, Go]
 
 author:
   name   : "Ngakan Gandhi"
