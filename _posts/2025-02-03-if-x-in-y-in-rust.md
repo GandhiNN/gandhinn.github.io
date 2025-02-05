@@ -19,8 +19,8 @@ if "BYD" in carmakers:
 
 We can do the same in Rust by using the `if let` statement to allows matching on various options on a variable.
 
-For the example, let's write a function in Rust to count the number of vowels ("a", "i", "u", "e", "o") in a 
-given word or sentence, regardless of case (i.e. "A" is the same with "a"):
+For the example, let's write a function in Rust to count the number of vowels (`a`, `i`, `u`, `e`, `o`) in a 
+given word or sentence, regardless of case (i.e. `A` is the same with `a`):
 
 {% highlight rust %}
 pub fn count_vowels(strinput: String) -> i32 {
