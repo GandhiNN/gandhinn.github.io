@@ -1,5 +1,7 @@
 ---
 title:  "`if x in y` in Rust"
+seo_title: Search if an item exists inside a Rust collection
+seo_description: Search if an item exists inside a Rust collection
 date:   2025-02-05 00:00:00 +0700
 categories:
   - Blog
