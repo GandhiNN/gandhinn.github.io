@@ -4,7 +4,7 @@ seo_title: "`if x in y` in Rust"
 seo_description: "Search if an item exists inside a collection in Rust"
 date:   2025-02-05 00:00:00 +0700
 categories:
-  - Blog
+  - Programming
 tags:
   - Rust
 ---
