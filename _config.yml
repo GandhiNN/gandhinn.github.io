@@ -157,3 +157,10 @@ exclude:
 # Remove the RSS icon
 atom_feed:
   hide: true
+
+# Setup Analytics
+analytics:
+  provider: "google-gtag"
+  google:
+   tracking_id: "G-RXKEH9NSWS"
+   anonymize_ip: false # default
