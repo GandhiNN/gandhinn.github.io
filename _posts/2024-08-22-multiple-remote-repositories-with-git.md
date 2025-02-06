@@ -7,8 +7,9 @@ categories:
   - Programming
 tags:
   - Git
+excerpts: "Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that."
 ---
-**The Problem**
+Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that.
 
 Check your remote repository info. In this example I have a project pushed to Github:
 
@@ -43,7 +44,7 @@ Now suppose you want to add a remote git repository on your Bitbucket project:
 $ git remote set-url origin --add https://<bitbucket_url>/scm/<bitbucket_project_name>/iot-vernemq-kafka-poc-stack.git
 {% endhighlight %}
 
-**The Solution**
+### The Solution
 
 To be able to do controlled Git workflow (e.g. just pull from Github remote or just push to Bitbucket remote), we add remote repository information using git remote:
 
@@ -136,7 +137,7 @@ origin  https://<bitbucket_url>/scm/<bitbucket_project_name>/iot-vernemq-kafka-p
 origin  https://<bitbucket_url>/scm/<bitbucket_project_name>/iot-vernemq-kafka-poc-stack.git (push)
 {% endhighlight %}
 
-**Notes**
+### Notes
 To skip SSL verification in your git workflow on your project you can use:
 
 {% highlight bash %}
