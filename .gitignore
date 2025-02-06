@@ -6,5 +6,4 @@ vendor
 Gemfile.lock
 backup
 cacert*
-_local_development*
 _drafts
