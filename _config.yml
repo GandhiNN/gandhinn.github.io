@@ -153,6 +153,7 @@ compress_html:
 #   - vendor/ruby/
 exclude:
   - backup/
+  - _drafts/
 
 # Remove the RSS icon
 atom_feed:
