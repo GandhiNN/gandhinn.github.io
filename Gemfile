@@ -25,6 +25,7 @@ group :jekyll_plugins do
   gem "jekyll-algolia"
   gem "jekyll-feed", "~> 0.12"
   gem "jekyll-remote-theme"
+  gem "mutex_m"
   gem "minimal-mistakes-jekyll"
 end
 
