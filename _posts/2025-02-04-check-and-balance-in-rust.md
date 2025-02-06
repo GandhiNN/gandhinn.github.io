@@ -1,7 +1,7 @@
 ---
-title:  "Check if a list is balanced in Rust"
-seo_title: "Check if a list is balanced in Rust"
-seo_description: "Check if a list is balanced in Rust"
+title:  "Check Whether a List is Balanced in Rust"
+seo_title: "check whether a list is balanced in rust"
+seo_description: "check whether a list is balanced in rust"
 date:   2025-02-04 00:00:00 +0700
 categories:
   - Programming

@@ -1,7 +1,7 @@
 ---
-title:  "Search if an item exists inside a collection in Rust"
-seo_title: "`if x in y` in Rust"
-seo_description: "Search if an item exists inside a collection in Rust"
+title:  "Search if an Item Exists Inside a Collection in Rust"
+seo_title: "search if an item exists inside a collection in rust"
+seo_description: "search if an item exists inside a collection in rust"
 date:   2025-02-03 00:00:00 +0700
 categories:
   - Programming
@@ -9,6 +9,7 @@ tags:
   - Rust
   - Python
 ---
+**The Problem**
 In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc):
 
 {% highlight python %}
@@ -19,6 +20,10 @@ carmakers = ["Toyota", "Mercedes Benz", "BMW", "Honda"]
 if "BYD" in carmakers:
     print("BYD is in car makers")
 {% endhighlight %}
+
+How can we do the same in Rust?
+
+**The Solution**
 
 We can do the same in Rust by using the `if let` statement to allows matching on various options on a variable.
 
@@ -37,7 +42,9 @@ pub fn count_vowels(strinput: String) -> i32 {
 }
 {% endhighlight %}
 
-Next, let's define the tests:
+**The Tests**
+
+Let's define our test case:
 
 {% highlight rust %}
 #[cfg(test)]
