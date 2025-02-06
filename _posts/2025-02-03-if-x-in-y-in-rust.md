@@ -7,6 +7,7 @@ categories:
   - Programming
 tags:
   - Rust
+  - Python
 ---
 In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc):
 
