@@ -7,7 +7,9 @@ categories:
   - Programming
 tags:
   - Rust
+excerpt: "This post is about a Rust port of solution of an interesting brain teaser that I've solved a couple years ago using Scala..."
 ---
+### The Problem
 This post is about a port of solution of an interesting brain teaser that I've solved a couple years ago in Rust. 
 
 > Given a non-empty list of integers, return `true` if there is a place to split the list so that the sum of the numbers on one side is equal to the sum of the numbers on the other side. 
@@ -20,6 +22,7 @@ The function shall return `false` when given a vector of `[1, 2, 2]`.
 
 Only the boolean value needs to be returned, not the split index point.
 
+### The Solution
 In Rust, there's an iterator method called `split_off()` that we can use for this purpose:
 
 {% highlight rust %}
@@ -51,6 +54,7 @@ As mentioned earlier, because the original input vector cannot be re-used, we ha
 
 In worst-case scenario, we will iterate `n = (input.len() - 1)` times.
 
+### The Tests
 Let's define the unit test:
 
 {% highlight rust %}

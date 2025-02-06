@@ -8,7 +8,9 @@ categories:
 tags:
   - Rust
   - Python
+excerpt: "In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc)..."
 ---
+### The Problem
 In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc):
 
 {% highlight python %}
@@ -20,6 +22,7 @@ if "BYD" in carmakers:
     print("BYD is in car makers")
 {% endhighlight %}
 
+### The Solution
 We can do the same in Rust by using the `if let` statement to allows matching on various options on a variable.
 
 For the example, let's write a function in Rust to count the number of vowels (`a`, `i`, `u`, `e`, `o`) in a 
@@ -36,6 +39,8 @@ pub fn count_vowels(strinput: String) -> i32 {
     num_vowels
 }
 {% endhighlight %}
+
+### The Tests
 
 Now, let's define our test case:
 

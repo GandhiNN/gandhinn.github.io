@@ -7,8 +7,9 @@ categories:
   - Programming
 tags:
   - Git
-excerpts: "Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that."
+excerpt: "Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that..."
 ---
+### The Problem
 Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that.
 
 Check your remote repository info. In this example I have a project pushed to Github:
