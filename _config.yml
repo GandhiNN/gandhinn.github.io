@@ -120,6 +120,10 @@ defaults:
       layout: single
       author_profile: true
 
+# Site Logo
+logo: "assets/images/kelusa_logo.png"
+# og_image: "/assets/images/default_card.jpg"
+
 # use utterances for comments
 repository: "GandhiNN/gandhinn.github.io"
 
