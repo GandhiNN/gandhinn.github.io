@@ -44,7 +44,7 @@ pub fn count_vowels(strinput: String) -> i32 {
 
 ### The Tests
 
-Now, let's define our test case:
+Now, let's define our unit test:
 
 {% highlight rust %}
 #[cfg(test)]
@@ -69,7 +69,8 @@ mod tests {
 }
 {% endhighlight %}
 
-Now let's run the test:
+
+Unit test result:
 
 {% highlight bash %}
 $ cargo test -q
