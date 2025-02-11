@@ -22,6 +22,8 @@ if "BYD" in carmakers:
     print("BYD is in car makers")
 {% endhighlight %}
 
+How can we do it in Rust?
+
 ### The Solution
 We can do the same in Rust by using the `if let` statement to allows matching on various options on a variable.
 
