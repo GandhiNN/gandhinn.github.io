@@ -8,7 +8,7 @@ categories:
 tags:
   - AWS
   - Java
-excerpt: "This post is a summay of how I built a simple and automated JAR package build using AWS services..."
+excerpt: "This post is a summary of how I built a simple and automated JAR package build using AWS services..."
 ---
 ### Overview
 This post is a summay of how I built a simple and automated JAR package build using AWS services.
