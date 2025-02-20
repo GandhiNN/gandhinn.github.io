@@ -41,11 +41,11 @@ Please note that at the time of this writing, Glue Python Shell version is still
 
 2. Create a new Glue Python Shell job and reference the S3 URI of the previously-uploaded pymssql wheel in your newly-created Glue job.
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/pymssql_1.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2022-06-13-ingest-data-from-mssql-db-using-aws-glue-python-shell/pymssql_1.png){: .align-center}
 
 3. Configure the connection to be used by the Glue Job towards the DB :
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/pymssql_2.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2022-06-13-ingest-data-from-mssql-db-using-aws-glue-python-shell/pymssql_2.png){: .align-center}
 
 4. Write the code. Example as follows :
 

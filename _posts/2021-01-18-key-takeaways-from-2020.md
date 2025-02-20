@@ -70,7 +70,7 @@ Next morning, suddenly you were able to solve the issue by adding just one tiny 
 
 Fast forward a couple months, your more senior colleagues at work invites you to a call asking you to explain the logic of your code because they find it cool and could be useful in their projects as well.
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/plateau.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-01-18-key-takeaways-from-2020/plateau.png){: .align-center}
 
 It’s always a plateau before you reach a new height.
 
