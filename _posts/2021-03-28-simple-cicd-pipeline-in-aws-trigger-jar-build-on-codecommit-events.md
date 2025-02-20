@@ -30,7 +30,7 @@ AWS services used are:
 * Give it a name ; I am using `ngandhi-codecommit-lambda-<programming_language>`
 * Click Create
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_1.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_1.png){: .align-center}
 
 #### 2. Create an S3 Bucket to Store the CodeBuild Output
 * Go to S3 console, click Create bucket
@@ -159,7 +159,7 @@ The content of `pom.xml`:
 4. Default for everything else (role for Lambda invocation will be created later)
 5. Click "Create function"
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_2.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_2.png){: .align-center}
 
 **4.2 The Lambda Handler Code**
 
@@ -210,7 +210,7 @@ AWSLambdaBasicExecutionRole
 * Skip “Tags” if you want to.
 * In the "Review" section, give the role a name. I am using `ngandhi-codebuild-trigger-lambda`
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_3.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_3.png){: .align-center}
 
 * Click Create role
 
@@ -220,7 +220,7 @@ Attach the newly created role to your Lambda function :
 * In the "Execution role" panel, click "Edit"
 * In the "Existing role" drop down, choose your previously created role and Click Save
 
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_4.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_4.png){: .align-center}
 
 #### 5. Create A CodeBuild Project
 * Go to CodeBuild console and click at "Create build project"
@@ -249,11 +249,11 @@ For "Artifacts":
 * Name: folder name. I am using "output"
 * The rest, leave as is
 * Click "Update artifacts"
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_5.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_5.png){: .align-center}
 * Logs : Leave as is
 
 Finally, click Create "build project"
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_6.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_6.png){: .align-center}
 
 #### 6. Setup Trigger on CodeCommit Repository
 * Go to your Lambda function dashboard and visit "Configuration" → "Triggers"
@@ -273,14 +273,14 @@ build = {
 {% endhighlight %}
 
 * Click "Add" to create the trigger
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_7.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_7.png){: .align-center}
 
 #### 7. Reviewing Trigger Configuration
 * After CodeCommit trigger has been configured in the Lambda console, visit your CodeCommit repository
 * Click "Settings" from the sidebar
 * Click "Triggers" from the tab
 * You will see your previously configured trigger there
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_8.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_8.png){: .align-center}
 
 #### 8. Test the Trigger
 * This is the fun part ; go back to your local text editor
@@ -320,15 +320,15 @@ git push -u origin master
 {% endhighlight %}
 
 * Go to your CodeBuild dashboard and see if a new build has kicked off:
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_9.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_9.png){: .align-center}
 
 * View the AWS CodeBuild logs from the build:
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_10.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_10.png){: .align-center}
 
 #### 9. Check the build output in S3
 * Go to your previously created S3 bucket
 * The JAR file will be visible inside your bucket (`<bucketName>/<artifactsOutputPath>/<objectKeys>`)
-![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/aws_cc_11.png){: .align-center}
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2021-03-28-simple-cicd-pipeline-in-aws-trigger-jar-build-on-codecommit-events/aws_cc_11.png){: .align-center}
 
 Congratulations, you have build a simple CI/CD pipeline in AWS.
 
