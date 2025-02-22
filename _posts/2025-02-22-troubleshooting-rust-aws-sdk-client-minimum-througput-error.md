@@ -139,6 +139,9 @@ From my perspective, the default behavior of the two guardrails are too aggressi
 Here's how I did it in my code:
 
 {% highlight rust %}
+// Import the Stalled Stream Protection configuration for SSO OIDC crate into scope
+use aws_sdk_ssooidc::config::StalledStreamProtectionConfig;
+
 ...
     // Set default timeout config to 10000 seconds
     let default_timeout_config = TimeoutConfig::builder()
