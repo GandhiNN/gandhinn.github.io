@@ -120,12 +120,12 @@ Upon further investigation by enabling debug tracing (`RUST_LOG=debug cargo run 
 ### The SDK Guardrails for Network Issues
 After reading the [official documentation](https://docs.aws.amazon.com/sdk-for-rust/latest/dg/timeouts.html), I learned that the AWS SDK for Rust has several settings to handle **API request timeouts** and **protect against stalled data streams** which may occur in the network, especially in the slower ones.
 
-**API Request Timeouts**
+#### API Request Timeouts
 The SDK provides a default timeout to protect agains transient issues in the network that could cause request attempts to take a long time or fail completely, ensuring the applications can fail fast and behave optimally.
 
 The default timeout of the SDK is set to _3.1 seconds_.
 
-**Stalled Stream Protection**
+#### Stalled Stream Protection
 A stalled stream is an upload or download stream that produces no data for longer than a configured grace period, preventing the applications from hanging indefinitely and never making progress. 
 
 The default behavior of the SDK is to enable stalled stream protection for both uploads and downloads and looks for at least _1 byte/sec of activity_ with _grace period of 20 seconds_.
