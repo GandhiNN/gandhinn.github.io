@@ -177,7 +177,7 @@ Here's the result after using the adjusted configuration:
 2025-02-22T00:30:45.997064Z DEBUG invoke{service=ssooidc operation=RegisterClient sdk_invocation_id=6539698}:try_op:try_attempt:Connection{peer=Client}: h2::codec::framed_read: received frame=Headers { stream_id: StreamId(69), flags: (0x4: END_HEADERS) }
 {% endhighlight %}
 
-From the above logs, we can see that the SDK set its timeout to 10,000 seconds and it disabled the througput check and was able to interact with the OIDC portal. 
+From the above logs, we can see that the SDK set its timeout to 10,000 seconds and it disabled the througpuht check and was able to interact with the OIDC portal. 
 
 ### Conclusion
 AWS SDK for Rust provides advanced settings that we can use to fine-tune our application's behavior when interacting with the networks. These settings are provided in every AWS SDK crates which gives greater control for the developers to further fine-tune their applications if they need tighter performance. But at the same time, we need to be extra careful when playing with the settings so they will not give detrimental side-effects.
