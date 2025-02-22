@@ -1,13 +1,13 @@
 ---
-title:  "Troubleshooting Rust AWS SDK Client Minimum Throughput Issue"
-seo_title: "troubleshooting rust aws sdk client minimum throughput issue"
-seo_description: "troubleshooting rust aws sdk client minimum throughput issue"
+title:  "Troubleshooting Rust AWS SDK Client Zero-Throughput Issue"
+seo_title: "troubleshooting rust aws sdk client zero-throughput issue"
+seo_description: "troubleshooting rust aws sdk client zero-throughput issue"
 date:   2025-02-22 00:00:00 +0700
 categories:
   - Programming
 tags:
   - Rust
-excerpt: "This post will describe the workaround to solve an issue in Rust AWS SDK client dispatch on a slow network..."
+excerpt: "This post will describe the workaround to solve an issue in Rust AWS SDK client dispatch on a slow network."
 ---
 ### Background
 I am developing a CLI application which has a function to register my client to AWS using Single-Sign-On on top of OIDC (OpenID Connect) protocol. Basically what it does is to interact with the AWS SSO portal to fetch all the required credentials information e.g account info, AWS access key pair, session token. 
