@@ -37,7 +37,7 @@ Choose "yes" to accept end-user agreement and Conda's environment initialization
 {% highlight bash %}
 # can be executed as non-root
 $ bash Anaconda3–2019.03-Linux-x86_64.sh
-# your prompt will look like this after relogin
+# your prompt will look like this after re-login
 (base) [gandhi@devserver ~]$
 {% endhighlight %}
 

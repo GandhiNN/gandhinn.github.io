@@ -10,13 +10,13 @@ tags:
 excerpt: "Since 2019 I've been using PySpark 2.4.4 for local big data development, and my system's version of Python had moved from 3.6 into 3.8...."
 ---
 ### The Problem
-Since 2019 I've been using PySpark 2.4.4 for my local big data development, and my system's Python had migrated from 3.6 into 3.8. This version drift caused me some headache when it throws the following error during the initialisation of `SparkSession` object from pyspark.sql module in my code:
+Since 2019 I've been using PySpark 2.4.4 for my local big data development, and my system's Python had migrated from 3.6 into 3.8. This version drift caused me some headache when it throws the following error during the initialization of `SparkSession` object from pyspark.sql module in my code:
 
 {% highlight bash %}
 TypeError: an integer is required (got type bytes)
 {% endhighlight %}
 
-This error was caused because PySpark version 2.4.4 does not support Python 3.8. Most of the recommendations i've found on the internet are telling me to downgrade to Python 3.7 or to upgrade Pyspark to the later version to work around the issue, for example by running `pip3 install --upgrade pyspark`.
+This error was caused because PySpark version 2.4.4 does not support Python 3.8. Most of the recommendations i've found on the internet are telling me to downgrade to Python 3.7 or to upgrade PySpark to the later version to work around the issue, for example by running `pip3 install --upgrade pyspark`.
 
 I am using a Spark standalone cluster in my local i.e. "installing from source"-way, and the above command did nothing to my PySpark installation i.e. the version stays at `2.4.4`. There are more steps needed to be taken.
 
@@ -82,4 +82,4 @@ Type --help for more information.
 ### Takeaways
 
 1. Always be consistent with your package management. Stick to brew or apt-get but don't mix both.
-2. Try to use venv to manage Python packages for different projects. Actually. this is one advice that I've heard so many times but at the moment it feels like it's too late to be implemented in my current setup.
+2. Try to use `venv` to manage Python packages for different projects. Actually. this is one advice that I've heard so many times but at the moment it feels like it's too late to be implemented in my current setup.

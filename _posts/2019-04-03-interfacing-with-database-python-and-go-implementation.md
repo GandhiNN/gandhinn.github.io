@@ -111,7 +111,7 @@ var (
     )
 {% endhighlight %}
 
-Note that composer is of `*string` (pointer to string) type because I found out that field is NULL-able. If you define it as only string, then you will get the following errorduring runtime when it scans a NULL value under that field:
+Note that composer is of `*string` (pointer to string) type because I found out that field is NULL-able. If you define it as only string, then you will get the following error during runtime when it scans a NULL value under that field:
 
 {% highlight bash %}
 Scan error on column index 5, name "Composer": unsupported Scan, storing driver.Value type <nil> into type *string

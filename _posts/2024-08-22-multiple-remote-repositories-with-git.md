@@ -1,6 +1,6 @@
 ---
 title:  "Multiple Remote Repositories with Git"
-seo_title: "using multiple remote repositores with git"
+seo_title: "using multiple remote repositories with git"
 seo_description: "using multiple remote repositories with git"
 date:   2024-08-22 00:00:00 +0700
 categories:

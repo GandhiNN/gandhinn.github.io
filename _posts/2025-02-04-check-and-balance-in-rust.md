@@ -50,7 +50,7 @@ pub fn check_and_balance(input: Vec<i32>) -> bool {
 
 Here, we start iterating and splitting off the input vector and do a sum comparison between the resulted two vectors. 
 
-As mentioned earlier, because the original input vector cannot be re-used, we have to clone the input vector on every iteration. We are returning early from the loop as soon as we found the first occurence where the sum of the element of the left vector equals to the sum of the element of the right one. 
+As mentioned earlier, because the original input vector cannot be re-used, we have to clone the input vector on every iteration. We are returning early from the loop as soon as we found the first occurrence where the sum of the element of the left vector equals to the sum of the element of the right one. 
 
 In worst-case scenario, we will iterate `n = (input.len() - 1)` times.
 

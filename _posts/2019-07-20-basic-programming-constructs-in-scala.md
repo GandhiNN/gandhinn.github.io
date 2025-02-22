@@ -14,7 +14,7 @@ I am in the middle of [Jose Portilla’s highly entertaining Scala and Spark for
 
 This note is my (naive) answers to Section 8’s Scala Programming Exercise on functions and flow control, and solely written for posterity (and to sharpen up my writing skills). Of course the codes will feel unoptimized to the pros, so feel free if you would like to suggest improvement to my codes in the comment section at the end of this post!
 
-Note: I rarely code to solve problems not related to my daily work in telco domain, so it was fun knowing that I could answer this kind of questions :)
+Note: I rarely code to solve problems not related to my daily work in telecommunication domain, so it was fun knowing that I could answer this kind of questions :)
 
 ### The Problems
 
