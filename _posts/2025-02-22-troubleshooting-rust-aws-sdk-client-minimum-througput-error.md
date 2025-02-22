@@ -12,7 +12,7 @@ excerpt: "This post will describe the workaround to solve an issue in Rust AWS S
 ### Background
 I am developing a CLI application which has a function to register my client to AWS using Single-Sign-On on top of OIDC (OpenID Connect) protocol. Basically what it does is to interact with the AWS SSO portal to fetch all the required credentials information e.g account info, AWS access key pair, session token. 
 
-On high level. the program will register the client id to the portal, retrieve the session token and role credentials, and finally writing those information into a file that can be loaded by my application every time it invokes any SDK APIs between a certain timeframe. 
+On high level. the program will register the client id to the portal, retrieve the session token and role credentials, and finally writing those information into a file that can be loaded by my application every time it invokes any SDK APIs between a certain time frame. 
 
 To do these operations, I am creating a `SsoAccessTokenProvider` struct which loads an `SdkConfig` object to further build the API client which has all the functionalities to retrieve the required information to build an SSO login information:
 
@@ -121,7 +121,7 @@ Upon further investigation by enabling debug tracing (`RUST_LOG=debug cargo run 
 After reading the [official documentation](https://docs.aws.amazon.com/sdk-for-rust/latest/dg/timeouts.html), I learned that the AWS SDK for Rust has several settings to handle **API request timeouts** and **protect against stalled data streams** which may occur in the network, especially in the slower ones.
 
 #### API Request Timeouts
-The SDK provides a default timeout to protect agains transient issues in the network that could cause request attempts to take a long time or fail completely, ensuring the applications can fail fast and behave optimally.
+The SDK provides a default timeout to protect against transient issues in the network that could cause request attempts to take a long time or fail completely, ensuring the applications can fail fast and behave optimally.
 
 The default timeout of the SDK is set to _3.1 seconds_.
 
@@ -180,7 +180,7 @@ Here's the result after using the adjusted configuration:
 2025-02-22T00:30:45.997064Z DEBUG invoke{service=ssooidc operation=RegisterClient sdk_invocation_id=6539698}:try_op:try_attempt:Connection{peer=Client}: h2::codec::framed_read: received frame=Headers { stream_id: StreamId(69), flags: (0x4: END_HEADERS) }
 {% endhighlight %}
 
-From the above logs, we can see that the SDK set its timeout to 10,000 seconds and it disabled the througpuht check and was able to interact with the OIDC portal. 
+From the above logs, we can see that the SDK set its timeout to 10,000 seconds and it disabled the throughput check and was able to interact with the OIDC portal. 
 
 ### Conclusion
 AWS SDK for Rust provides advanced settings that we can use to fine-tune our application's behavior when interacting with the networks. These settings are provided in every AWS SDK crates which gives greater control for the developers to further fine-tune their applications if they need tighter performance. But at the same time, we need to be extra careful when playing with the settings so they will not give detrimental side-effects.
