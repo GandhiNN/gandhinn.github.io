@@ -1,7 +1,7 @@
 ---
-title:  "Migrating from Poetry to UV: An Experience"
-seo_title: "migrating from poetry to uv: an experience"
-seo_description: "migrating from poetry to uv: an experience"
+title:  "Migrating from Poetry to UV"
+seo_title: "migrating from poetry to uv"
+seo_description: "migrating from poetry to uv"
 date:   2025-02-26 00:00:00 +0700
 categories:
   - Programming
@@ -10,14 +10,23 @@ tags:
 excerpt: "This post describes my experience migrating from Poetry to UV (+Ruff) as my Python packaging and build framework."
 ---
 ### Background
-In recent times, Rust has been gaining some niche traction where it is being used as an underlying language for many Python libraries. Two of the most popular ones are [uv](https://astral.sh/blog/uv), which is touted as the fastest Python package installer and resolver and [Ruff](https://docs.astral.sh/ruff/?ref=blog.jerrycodes.com), which is touted as the fastest Python linter and code formatter. Both libraries are being developed and maintained by [Astral](https://astral.sh), which has the mission to make the Python ecosystem more productive.
+Lately, Rust has been gaining some traction as an underlying language for many Python libraries. Two of the most popular ones are [uv](https://astral.sh/blog/uv) and [Ruff](https://docs.astral.sh/ruff/?ref=blog.jerrycodes.com), which are touted as the fastest Python package manager, linter and code formatter. Both libraries are being developed and maintained by [Astral](https://astral.sh), a company who aims to make the Python ecosystem more productive.
 
 ### The Problem
-I have been building and maintaining a lot of internal tools using Python with a similar vision to make the ecosystem in my workplace to be more productive while at the same time be more cost-efficient by reducing dependencies on external SaaS solution. I am using Poetry as my main Python dependency management and packaging and also as the backend to run linter tools such as `isort`, `Black`, `flake8` and unit tests.
+I have been building and maintaining a lot of internal tools using  Poetry as my main Python package management and packaging and also as the backend to run linter tools such as `isort`, `Black`, `flake8` and unit tests. With increasing amount of lines of code and dependencies, I noticed the duration of my Jenkins run time is also growing and it means that the cost of running the CI/CD pipeline is also increasing. The potential of using `uv` and `ruff` to reduce the time compels me to try them out. This post describes my experience of the migration and brief comparison of the final results between the two frameworks.
 
-With increasing amount of lines of code and dependencies, I noticed the CI/CD pipeline elapsed time is also growing and it means that the cost of running the pipeline is also increasing. The potential of using `uv` and `ruff` to reduce the time compels me to try them out. This post describes my experience of the migration and brief comparison of the final results between the two frameworks.
+Tl;dr the differences between the two are very minor. Even though uv does not have feature parity with Poetry yet, but it does a great job of utilizing similar API to provide a near-seamless migration. 
 
-### The Steps
+#### 0. Install uv and ruff
+TBC
+
+#### 1. Convert our poetry-compatible build system requirements file to uv-compatible format
+TBC
+
+#### 2. Clean our previous build artifacts and re-sync
+TBC  
+
+### The Complete Makefile
 My CI/CD pipeline are defined in Jenkinsfile stages and it's triggered by BitBucket post webhook on BitBucket events. On high-level, the stages are:
 
 1. BitBucket webhook triggered by pull request merge events.
@@ -28,8 +37,9 @@ My CI/CD pipeline are defined in Jenkinsfile stages and it's triggered by BitBuc
 6. Run unit testing.
 7. Build and sync the artifacts to the runtime environment.
 
-#### The `Makefile`
-**Use the Same Poetry Steps**
+Step 3 to 6 are defined in a Makefile. Here, I will share the comparison of each Makefile's code blocks using Poetry 
+and uv.
+
 {% highlight makefile %}
 NAME := kumeza
 UV := $(shell command -v uv 2> /dev/null)
