@@ -7,10 +7,15 @@ categories:
   - Programming
 tags:
   - Python
-excerpt: "This post describes my experience migrating from Poetry to UV (+Ruff) as my package build framework."
+excerpt: "This post describes my experience migrating from Poetry to UV (+Ruff) as my Python packaging and build framework."
 ---
 ### Background
-TBC
+In recent times, Rust has been gaining some niche traction where it is being used as an underlying language for many Python libraries. Two of the most popular ones are [uv](https://astral.sh/blog/uv), which is touted as the fastest Python package installer and resolver and [Ruff](https://docs.astral.sh/ruff/?ref=blog.jerrycodes.com), which is touted as the fastest Python linter and code formatter. Both libraries are being developed and maintained by [Astral](https://astral.sh), which has the mission to make the Python ecosystem more productive.
+
+### The Problem
+I have been building and maintaining a lot of internal tools using Python with a similar vision to make the ecosystem in my workplace to be more productive while at the same time be more cost-efficient by reducing dependencies on external SaaS solution. I am using Poetry as my main Python dependency management and packaging and also as the backend to run linter tools such as `isort`, `Black`, `flake8` and unit tests.
+
+With increasing amount of lines of code and dependencies, I noticed the CI/CD pipeline elapsed time is also growing and it means that the cost of running the pipeline is also increasing. The potential of using `uv` and `ruff` to reduce the time compels me to try them out. This post describes my experience of the migration and brief comparison of the final results between the two frameworks.
 
 ### The Solution
 
