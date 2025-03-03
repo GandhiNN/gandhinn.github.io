@@ -10,7 +10,7 @@ tags:
 excerpt: "This post is about a Rust port of solution of an interesting brain teaser that I've solved a couple years ago using Scala..."
 ---
 ### The Problem
-This post is about a port of solution of an interesting brain teaser that I've solved a couple years ago in Rust. 
+This post describes the Rust version of a solution for an interesting brain teaser that I've solved a couple years ago in Scala. 
 
 > Given a non-empty list of integers, return `true` if there is a place to split the list so that the sum of the numbers on one side is equal to the sum of the numbers on the other side. 
 
