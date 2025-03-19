@@ -34,7 +34,7 @@ To migrate from Poetry to uv, we can use the migration tool by running the follo
 uvx migrate-to-uv
 {% endhighlight %}
 
-### The Build Pipeline Makefile
+### The Build Pipeline
 My CI/CD pipeline are defined in Jenkinsfile stages and it's triggered by BitBucket post webhook on BitBucket events. On high-level, the stages are:
 
 1. BitBucket webhook triggered by pull request merge events.
@@ -45,7 +45,9 @@ My CI/CD pipeline are defined in Jenkinsfile stages and it's triggered by BitBuc
 6. Run unit testing.
 7. Build and sync the artifacts to the runtime environment.
 
-#### Naive Migration
+Steps (3) through (6) are defined in a Makefile, which will be called during the Jenkins build itself.
+
+#### Naive Migration from Poetry to Uv
 At first, I was just migrating naively from Poetry to uv, i.e., I just replaced all `poetry` commands to `uv` with the same linter configuration:
 
 {% highlight makefile %}
