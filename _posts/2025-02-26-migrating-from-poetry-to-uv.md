@@ -15,7 +15,7 @@ toc_label: "Table of Contents"
 Lately, Rust has been gaining some traction as an underlying language for many Python libraries. Two of the most popular ones are [uv](https://astral.sh/blog/uv) and [Ruff](https://docs.astral.sh/ruff/?ref=blog.jerrycodes.com), which are touted as the fastest Python package manager, linter and code formatter. Both libraries are being developed and maintained by [Astral](https://astral.sh), a company who aims to make the Python ecosystem more productive.
 
 ### The Problem
-I've been building and maintaining some internal SDKs using Poetry as my main Python package management and packaging. It's also used as the backend to run linter tools such as `isort`, `Black`, `flake8` and run unit tests. With the increasing amount of lines of code and dependencies, I noticed the runtime duration of my Jenkins pipeline is also growing, which implies that the cost of running the CI/CD pipeline is also increasing. 
+I've been building and maintaining some internal SDKs using Poetry as my main Python package dependency management. It's also used as the backend to run linter tools such as `isort`, `Black`, `flake8` and run unit tests. With the increasing amount of lines of code and dependencies, I noticed the runtime duration of my Jenkins pipeline is also growing, which implies that the cost of running the CI/CD pipeline is also increasing. 
 
 `uv` and `ruff`, which are written in Rust, promises some potential to reduce the time needed to build my SDK, which compels me to try them out. This post describes my experience of the migration and brief comparison of the final results between the two frameworks.  
 
