@@ -97,13 +97,15 @@ build:
 
 {% endhighlight %}
 
-The result is Uv performed slightly better than Poetry:
+The result is Uv performed better than Poetry, which is **35 seconds faster** if we just calculate the difference of time needed for the impacted stages i.e. the package installation, code formatting and linting, and unit test:
 
 |---------+--------|
 | Builder | Result |  
 |:-------:|:------:|  
 |Poetry|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/poetry-build_steps-20250227.png){: .align-center}|
 |Uv|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/uv-build-steps-same_with_poetry-20250227.png){: .align-center}|
+
+This is quite nice already, but I was wondering if more performance can be squeezed out of it.
 
 #### Using Ruff Default Formatter Configuration
 Ruff's formatter is designed as a drop-in replacement for `Black`, but with more focus on performance and compatibility, due to the widespread use of Black in the Python ecosystem. Thus, I think that Ruff's default configuration will be good enough to ensure proper formatting and readability, and also PEP compliance of my codebase, without having to turn too much knobs and levers.
@@ -154,7 +156,7 @@ build:
 
 {% endhighlight %}
 
-This time Uv performed much better than Poetry, which as expected, is down to the performance of the default Ruff formatter configuration:
+This time Uv performed much better than Poetry. It is faster by **82 seconds** compared to Poetry. As expected, the big increase comes down to the performance of the default Ruff formatter configuration:
 
 |---------+--------|
 | Builder | Result |  
