@@ -8,6 +8,8 @@ categories:
 tags:
   - Rust
 excerpt: "This post is about a Rust port of solution of an interesting brain teaser that I've solved a couple years ago using Scala..."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 This post describes the Rust version of a solution for an interesting brain teaser that I've solved a couple years ago in Scala. 

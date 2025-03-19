@@ -8,6 +8,8 @@ categories:
 tags:
   - Linux
 excerpt: "Since 2019 I've been using PySpark 2.4.4 for local big data development, and my system's version of Python had moved from 3.6 into 3.8...."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 Since 2019 I've been using PySpark 2.4.4 for my local big data development, and my system's Python had migrated from 3.6 into 3.8. This version drift caused me some headache when it throws the following error during the initialization of `SparkSession` object from pyspark.sql module in my code:

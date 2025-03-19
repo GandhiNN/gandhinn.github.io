@@ -9,6 +9,8 @@ tags:
   - Rust
   - Python
 excerpt: "In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc)..."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 In Python, you can  use the `in` keyword to check if a value is present in a sequence (list, range, string, etc):

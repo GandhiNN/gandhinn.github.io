@@ -8,6 +8,8 @@ categories:
 tags:
   - Scala
 excerpt: "I am in the middle of Jose Portilla’s highly entertaining Scala and Spark for Big Data and Machine Learning course in Udemy. ....."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### Overview
 I am in the middle of [Jose Portilla’s highly entertaining Scala and Spark for Big Data and Machine Learning course in Udemy](https://www.udemy.com/course/scala-and-spark-for-big-data-and-machine-learning/). The course delivery is on point and easy to follow for novices like me; I could not recommend this course more highly.

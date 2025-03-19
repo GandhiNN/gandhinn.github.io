@@ -8,6 +8,8 @@ categories:
 tags:
   - Life
 excerpt: "For me, 2020 was a dent in space-time continuum..."
+toc: true
+toc_label: "Table of Contents"
 ---
 
 For me, 2020 was a dent in space-time continuum, a chapter of homecoming (literally!), a period when I realized how many time I’ve wasted in previous years filling the book cabinets instead of emptying them. It was an epiphany.

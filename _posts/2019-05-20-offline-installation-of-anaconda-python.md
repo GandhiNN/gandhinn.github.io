@@ -8,6 +8,8 @@ categories:
 tags:
   - Python
 excerpt: "My daily workloads consist of data analytics stuffs like report generation automation and capturing node performance statistics, and some NetOps automation....."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 My daily workloads consist of data analytics stuffs like report generation automation and capturing node performance statistics, and some NetOps automation (configuration management, file transfer, CLI adhoc check). I was given a bare metal server with plain CentOS 6 as its operating system, without internet connectivity.

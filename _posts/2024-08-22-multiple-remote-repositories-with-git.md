@@ -8,6 +8,8 @@ categories:
 tags:
   - Git
 excerpt: "Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that..."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 Sometimes, we want to push update of our projects to multiple repositories, in different SCM. In this post, I am sharing one of the ways to do that.

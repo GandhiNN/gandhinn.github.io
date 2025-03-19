@@ -10,6 +10,8 @@ tags:
   - SQL
   - Python
 excerpt: "In many multinational companies, Microsoft SQL Database Server is one of the three most deployed database systems. Its compatibility with other Microsoft Products...."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### Background
 In many multinational companies, Microsoft SQL Database Server is one of the three most deployed database systems. Its compatibility with other Microsoft Products, which still dominates the end-user OS market, is one reason why it's still prevalent.

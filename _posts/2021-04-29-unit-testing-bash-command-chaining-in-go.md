@@ -9,6 +9,8 @@ tags:
   - Bash
   - Go
 excerpt: "Every sysadmin knows the following command chain to produce a hashed string...."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### The Problem
 Every sysadmin knows the following command chain to produce a hashed string:
