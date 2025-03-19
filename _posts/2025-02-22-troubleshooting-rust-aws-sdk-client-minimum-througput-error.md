@@ -8,6 +8,8 @@ categories:
 tags:
   - Rust
 excerpt: "This post will describe the workaround to solve an issue in Rust AWS SDK client dispatch on a slow network."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### Background
 I am developing a CLI application which has a function to register my client to AWS using Single-Sign-On on top of OIDC (OpenID Connect) protocol. Basically what it does is to interact with the AWS SSO portal to fetch all the required credentials information e.g account info, AWS access key pair, session token. 
