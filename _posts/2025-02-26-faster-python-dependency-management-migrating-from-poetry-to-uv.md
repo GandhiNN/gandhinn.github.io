@@ -102,8 +102,8 @@ The result is Uv performed better than Poetry, which is **35 seconds faster** if
 |---------+--------|
 | Builder | Result |  
 |:-------:|:------:|  
-|Poetry|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/poetry-build_steps-20250227.png){: .align-center}|
-|Uv|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/uv-build-steps-same_with_poetry-20250227.png){: .align-center}|
+|Poetry|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-faster-python-dependency-management-migrating-from-poetry-to-uv/poetry-build_steps-20250227.png){: .align-center}|
+|Uv|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-faster-python-dependency-management-migrating-from-poetry-to-uv/uv-build-steps-same_with_poetry-20250227.png){: .align-center}|
 
 This is quite nice already, but I was wondering if more performance can be squeezed out of it.
 
@@ -161,8 +161,8 @@ This time Uv performed much better than Poetry. It is faster by **82 seconds** c
 |---------+--------|
 | Builder | Result |  
 |:-------:|:------:|  
-|Poetry|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/poetry-build_steps-20250227.png){: .align-center}|
-|Uv|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-migrating-from-poetry-to-uv/uv-build_steps-20250227.png){: .align-center}|
+|Poetry|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-faster-python-dependency-management-migrating-from-poetry-to-uv/poetry-build_steps-20250227.png){: .align-center}|
+|Uv|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-02-26-faster-python-dependency-management-migrating-from-poetry-to-uv/uv-build_steps-20250227.png){: .align-center}|
 
 ### Conclusion
 The migration from Poetry to Uv in my work has been a pleasant and rewarding experience. Even though uv does not have feature parity with Poetry yet, but it does a great job of utilizing similar API to provide a near-seamless migration. Furthermore, it does provide some improvements in my development chain. The numbers may seem small, but if you multiply it by the number of build pipeline that runs every day, it could accumulate into a quite significant platform cost savings.
