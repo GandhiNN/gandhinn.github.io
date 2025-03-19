@@ -1,7 +1,7 @@
 ---
-title:  "Migrating from Poetry to UV"
-seo_title: "migrating from poetry to uv"
-seo_description: "migrating from poetry to uv"
+title:  "Faster Python Dependency Management: Migrating from Poetry to Uv"
+seo_title: "faster python dependency management: migrating from poetry to uv"
+seo_description: "faster python dependency management: migrating from poetry to uv"
 date:   2025-02-26 00:00:00 +0700
 categories:
   - Programming
