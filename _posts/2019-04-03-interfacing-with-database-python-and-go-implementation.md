@@ -10,6 +10,8 @@ tags:
   - Go
   - SQL
 excerpt: "This post will explain about how I am interfacing with Database using Python and Go."
+toc: true
+toc_label: "Table of Contents"
 ---
 ### Overview
 It goes without saying that every journey in data analytics starts by learning SQL, the most mainstream language that is used to access almost all kind of databases out there. Since I want to kickstart the journey, I picked SQLite as my practice environment because of its self-contained and zero-configuration principles, making it the most convenient DB out there for this purpose.
