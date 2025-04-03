@@ -21,8 +21,26 @@ AWS CLI invocation:
 	b. (might be invalid) check cli cache file -> `~/.aws/cli/cache/<cache>.json`
 		i. content of this file can be the same with `~/.aws/credentials`
 		ii. but make sure it is using CamelCase formatting for the keys!
-			- use the `#[serde(rename_all = "camelCase")]` directive for the struct.
-	c. check the token cache -> `~/.aws/sso/cache`
+			- use the `#[serde(rename_all = "PascalCase")]` directive for the struct.
+			- and use the `#[serde(rename = "PascalCase")]` for the attribute
+	c. check the token cache -> `~/.aws/sso/cache/<filename>.json`
+		i. note: <filename> must be the sha1 hash version of the session name registered under the profile you are using.
+		ii. for example, suppose that you have the following entry in your `~/.aws/config` file, and let's say you want to invoke the following AWS CLI command: `aws s3 ls --profile icloud-dev`:
+			```
+			[sso-session sso-d-9367052e24]
+			sso_start_url=https://d-9367052e24.awsapps.com/start/#
+			sso_registration_scopes=sso:account:access
+			sso_region=eu-west-1
+
+			[profile icloud-dev]
+			sso_account_id=291751643970
+			sso_session=sso-d-9367052e24 --> the cache filename must be the sha1 hash version of sso_session name!
+			sso_role_name=tlz_developer
+			region=eu-west-1
+			```  
+
+			Then you need to have the cache file with the following name:
+			`~/.aws/sso/cache/sha1::from("sso-d-9367052e24").json` i.e `~/.aws/sso/cache/7a7d2bddd4a31e7b4be4c83fdbbe1af869b642f8.json`
 2. (Fallback) AWS Credentials file -> `~/.aws/credentials`:
 	a. check if AWS access key ID and AWS secret access key are valid, i.e. correctness
 	b. check if AWS session token is valid (i.e. correctness and "fresh")
