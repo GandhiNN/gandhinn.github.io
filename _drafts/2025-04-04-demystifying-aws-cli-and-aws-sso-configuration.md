@@ -1,7 +1,7 @@
 ---
-title:  "Lesson Learned: AWS CLI Login Flow"
-seo_title: "lesson learned aws cli login flow"
-seo_description: "lesson learned aws cli login flow"
+title:  "Demystifying AWS CLI and AWS SSO Configuration"
+seo_title: "demystifying aws cli and aws sso configuration"
+seo_description: "demystifying aws cli and aws sso configuration"
 date:   2025-04-04 00:00:00 +0700
 categories:
   - Programming
@@ -39,8 +39,9 @@ AWS CLI invocation:
 			region=eu-west-1
 			```  
 
-			Then you need to have the cache file with the following name:
-			`~/.aws/sso/cache/sha1::from("sso-d-9367052e24").json` i.e `~/.aws/sso/cache/7a7d2bddd4a31e7b4be4c83fdbbe1af869b642f8.json`
+			Then you need to have the cache file following this syntax = `~/.aws/sso/cache/$(sha1::from("sso-d-9367052e24")).json` 
+			
+			i.e., `~/.aws/sso/cache/7a7d2bddd4a31e7b4be4c83fdbbe1af869b642f8.json`
 2. (Fallback) AWS Credentials file -> `~/.aws/credentials`:
 	a. check if AWS access key ID and AWS secret access key are valid, i.e. correctness
 	b. check if AWS session token is valid (i.e. correctness and "fresh")
@@ -51,5 +52,5 @@ OIDC SSO:
 3. Create AWS config file, containing the AWS profile name and its session -> `~/.aws/config`
 4. Create AWS credential file -> `~/.aws/credentials`
 
-### Overview
+### Conclusion
 <TBC>
