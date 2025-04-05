@@ -28,7 +28,7 @@ The service emits only OIDC access tokens, such that obtaining a new token (For 
 
 The access tokens provided by this service grant access to all AWS account entitlements assigned to an IAM Identity Center user, not just a particular application.
 
-### Description
+### How AWS CLI Works with IAM OIDC Credentials and Configurations.
 AWS CLI invocation:
 
 1. (Primary) AWS Config file -> `~/.aws/config`:
