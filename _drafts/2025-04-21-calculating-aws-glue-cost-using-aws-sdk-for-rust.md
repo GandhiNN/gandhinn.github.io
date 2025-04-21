@@ -16,16 +16,16 @@ In my current employer, one of my day-to-day responsibilities is overseeing more
 
 AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, I found that this is quite inflexible for me as a power user to control the views that I would like to have e.g. if I would like to export the statistics into a universal format i.e. CSV files for further post-processing and analytics. I decided to build a CLI tool to solve this problem by using AWS SDK for Rust, however there are some challenges that I need to consider:
 
-# How does we differentiate between Glue Standard ETL, Glue Auto-Scaling ETL, and Glue Python Shell?
+# 1. How does we differentiate between Glue Standard ETL, Glue Auto-Scaling ETL, and Glue Python Shell?
 TBC
 
-# How does we calculate the DPU hours based on the job run time?
+# 2. How does we calculate the DPU hours based on the job run time?
 TBC
 
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
 TBC
 
-# How does we convert the DPU hours into its respective monetary values?
+# 3. How does we convert the DPU hours into its respective monetary values?
 TBC
 
 # Conclusion
