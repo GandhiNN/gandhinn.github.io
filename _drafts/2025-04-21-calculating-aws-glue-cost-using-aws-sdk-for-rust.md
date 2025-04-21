@@ -28,7 +28,7 @@ TBC
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
 TBC
 
-# 3. How does we convert the DPU hours into its respective monetary values?
+# 3. How does we convert the DPU hours into monetary values?
 TBC
 
 # Conclusion
