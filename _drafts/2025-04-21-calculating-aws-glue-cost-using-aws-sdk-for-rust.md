@@ -20,7 +20,9 @@ AWS Glue Console already provides us with a visual tool for the users to monitor
 TBC
 
 # 1. How does we differentiate between Glue Standard ETL, Glue Auto-Scaling ETL, and Glue Python Shell?
-TBC
+One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
+
+The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
 # 2. How does we calculate the DPU hours based on the job run time?
 TBC
