@@ -14,7 +14,7 @@ toc_label: "Table of Contents"
 # Overview
 In my current employer, one of my day-to-day responsibilities is overseeing more than 300 data pipelines moving TBs of data daily from all of our affiliates across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours". 
 
-AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, I found that this is quite inflexible for me as a power user to control the views that I would like to have e.g. if I would like to export the statistics into a universal format i.e. CSV files for further post-processing and analytics. I decided to build a CLI tool to solve this problem by using AWS SDK for Rust, however there are some challenges that I need to consider:
+AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool to solve this problem by using AWS SDK for Rust, however there are some challenges that I need to consider:
 
 # 0. How does we use the AWS SDK for Rust for Glue? What is the API to use?
 TBC
