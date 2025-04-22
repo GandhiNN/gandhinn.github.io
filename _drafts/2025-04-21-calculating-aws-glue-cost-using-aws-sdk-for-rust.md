@@ -12,25 +12,32 @@ toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-In my current employer, one of my day-to-day responsibilities is overseeing more than 300 data pipelines moving TBs of data daily from all of our affiliates across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours". 
+In my workplace, one of my day-to-day responsibilities is overseeing more than 300 data pipelines moving TBs of data daily from all of our affiliates across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours". 
 
-AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool to solve this problem by using AWS SDK for Rust, however there are some challenges that I need to consider:
+AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool which leverages [AWS SDK for Rust](https://aws.amazon.com/sdk-for-rust/) to solve this problem. However, there are some challenges that I need to answer:
 
-# 0. How does we use the AWS SDK for Rust for Glue? What is the API to use?
+1. What is the API to use to get the data related to AWS Glue cost?
+2. Can we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
+3. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
+4. How do we convert AWS Glue DPU-hours into its monetary values (USD)?
+
+In this post, I will describe my approach to answer those challenges.
+
+# 1. What is the API to use to get the data related to AWS Glue cost?
 TBC
 
-# 1. How does we differentiate between Glue Standard ETL, Glue Auto-Scaling ETL, and Glue Python Shell?
+# 2. How does we differentiate between Glue Standard ETL, Glue Auto-Scaling ETL, and Glue Python Shell?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
 
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
-# 2. How does we calculate the DPU hours based on the job run time?
+# 3. How does we calculate the DPU hours based on the job run time?
 TBC
 
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
 TBC
 
-# 3. How does we convert the DPU hours into monetary values?
+# 4. How does we convert the DPU hours into monetary values?
 TBC
 
 # Conclusion
