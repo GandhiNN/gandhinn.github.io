@@ -1,7 +1,7 @@
 ---
-title:  "Calculating AWS Glue Cost using AWS SDK for Rust"
-seo_title: "calculating aws glue cost using aws sdk for rust"
-seo_description: "calculating aws glue cost using aws sdk for rust"
+title:  "AWS Glue Cost calculation using AWS SDK for Rust"
+seo_title: "aws glue cost calculation using aws sdk for rust"
+seo_description: "aws glue cost calculation using aws sdk for rust"
 date:   2025-04-21 00:00:00 +0700
 categories:
   - Programming
@@ -24,7 +24,104 @@ AWS Glue Console already provides us with a visual tool for the users to monitor
 In this post, I will describe my approach to answer those challenges.
 
 # 1. What is the API to use to get the data related to AWS Glue cost?
-TBC
+I used the `get_job_runs()` API. This API returns an array of Glue Job runs which contains many information that I can use to calculate the cost. In my case, I am starting with defining a container struct to hold the fields that I need:
+
+{% highlight rust %}
+use serde::Serialize;
+
+#[derive(Serialize)]
+pub struct Run {
+    pub job_name: String,
+    pub run_id: String,
+    pub started_on: String,
+    pub completed_on: String,
+    pub duration: i32,
+    pub state: String,
+    pub worker_type: String,
+    pub max_capacity: f64,
+    pub dpu_hours: f64,
+    pub cost_usd: f64,
+}
+{% endhighlight %}
+
+Then I built a Glue SDK client struct. Building the client itself is out of scope of this post:
+
+{% highlight rust %}
+use aws_sdk_glue::{Client, Error, types::WorkerType};
+
+pub struct OpClient {
+    pub client: Client,
+}
+
+impl OpClient {
+    pub async fn new(profile: &str, disable_stalled_stream_protection: &str, timeout: u64) -> Self {
+          let credentials = load_credentials(profile);
+          let config = set_config(
+              profile,
+              credentials,
+              disable_stalled_stream_protection,
+              timeout,
+          )
+          .await;
+          let client = Client::new(&config);
+          Self { client }
+      }
+    ...
+}
+{% endhighlight %}
+
+Next is I defined a method for `OpClient` which implements the `get_job_run()` API. This method returns a result type which contains a vector of Glue Job runs, serialized to the `Run` struct I've defined earlier, and the possible error variants.
+
+{% highlight rust %}
+    ...
+    pub async fn get_job_runs(&self, job_name: &str) -> Result<Vec<Run>, Error> {
+        let mut job_runs = self
+            .client
+            .get_job_runs()
+            .job_name(job_name)
+            .into_paginator()
+            .send();
+        let mut glue_job_runs: Vec<Run> = Vec::new();
+        while let Some(job_runs_output) = job_runs.next().await {
+            match job_runs_output {
+                Ok(v) => {
+                    let runs = v.job_runs();
+                    for run in runs {
+                        // println!("{:#?}", run);
+                        glue_job_runs.push(Run {
+                            job_name: run.job_name().unwrap().to_string(),
+                            run_id: run.id().unwrap().to_string(),
+                            started_on: run.started_on().unwrap().to_string(),
+                            completed_on: run.completed_on().unwrap().to_string(),
+                            duration: run.execution_time(),
+                            state: run.job_run_state().unwrap().to_string(),
+                            worker_type: {
+                                match run.worker_type() {
+                                    Some(WorkerType::G025X) => "G025X".to_string(),
+                                    Some(WorkerType::G1X) => "G1X".to_string(),
+                                    Some(WorkerType::G2X) => "G2X".to_string(),
+                                    Some(WorkerType::G4X) => "G4X".to_string(),
+                                    Some(WorkerType::G8X) => "G8X".to_string(),
+                                    Some(WorkerType::Standard) => "Standard".to_string(),
+                                    Some(WorkerType::Z2X) => "Z2X".to_string(),
+                                    Some(other) if other.as_str() == "NewFeature" => {
+                                        "Other".to_string()
+                                    }
+                                    _ => "None".to_string(),
+                                }
+                            },
+                            max_capacity: run.max_capacity().unwrap_or_default(),
+                            dpu_hours: get_dpu_hours(run.clone()),
+                            cost_usd: get_cost(get_dpu_hours(run.clone())),
+                        })
+                    }
+                }
+                Err(e) => println!("{:#?}", e),
+            }
+        }
+        Ok(glue_job_runs)
+    ...
+{% endhighlight %}
 
 # 2. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
