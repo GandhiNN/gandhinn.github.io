@@ -123,16 +123,62 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
     ...
 {% endhighlight %}
 
-# 2. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
+# 2. How does we calculate the DPU hours based on the job run time?
+In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. Here's the function signature:
+
+{% highlight rust %}
+pub fn get_dpu_hours(r: JobRun) -> f64 {
+    if r.dpu_seconds.is_none() {
+        // Glue Standard (Spark and Python Shell)
+        let dur = r.execution_time();
+        if dur < 60 {
+            let dur_rounded = mathutil::ceiling(dur as u64, 60); // round up to 60 seconds
+            let d = ((dur_rounded as f64 / 60_f64) * r.max_capacity().unwrap_or_default()) / 60_f64;
+            precision_f64(d, 2)
+        } else {
+            let d = ((dur as f64 / 60_f64) * r.max_capacity().unwrap_or_default()) / 60_f64;
+            precision_f64(d, 3)
+        }
+    } else {
+        // Handle for Glue auto-scaling (Spark)
+        let dur = r.execution_time();
+        if dur < 60 {
+            let dur_rounded = mathutil::ceiling(dur as u64, 60); // round up to 60 seconds
+            let d = (dur_rounded as f64 / 60_f64) / 60_f64; // we don't care about the max capacity as it's dynamically scaled
+            precision_f64(d, 2)
+        } else {
+            let d = (r.dpu_seconds().unwrap() / 60_f64) / 60_f64;
+            precision_f64(d, 3)
+        }
+    }
+}
+{% endhighlight %}
+
+## Extra: How does we handle rounding up of decimal numbers in Rust?
+In the above code, you can see that I am defining a custom math method called `mathutil::ceiling()` which has the following function definition:
+
+{% highlight rust %}
+// mathutil.rs
+
+pub fn ceiling(num: u64, nearest: u64) -> u64 {
+    if num < nearest {
+        nearest
+    } else {
+        let mut counter = 0;
+        let mut rounded = 0;
+        while rounded < num {
+            counter += 1;
+            rounded += nearest;
+        }
+        counter * nearest
+    }
+}
+{% endhighlight %}
+
+# 3. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
 
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
-
-# 3. How does we calculate the DPU hours based on the job run time?
-TBC
-
-## Extra: How does we handle rounding up of decimal numbers in Rust?
-TBC
 
 # 4. How does we convert the DPU hours into monetary values?
 
