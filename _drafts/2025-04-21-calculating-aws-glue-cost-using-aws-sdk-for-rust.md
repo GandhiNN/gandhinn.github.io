@@ -124,7 +124,9 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
 {% endhighlight %}
 
 # 2. How does we calculate the DPU hours based on the job run time?
-In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. Here's the function signature:
+In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. 
+
+Here's the function signature:
 
 {% highlight rust %}
 pub fn get_dpu_hours(r: JobRun) -> f64 {
@@ -155,7 +157,8 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 {% endhighlight %}
 
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
-In the above code, you can see that I am defining a custom math method called `mathutil::ceiling()` which has the following function definition:
+In the above code, you can see that 
+I am defining a custom math method called `mathutil::ceiling()` which has the following function definition:
 
 {% highlight rust %}
 // mathutil.rs
@@ -181,8 +184,18 @@ One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
 # 4. How does we convert the DPU hours into monetary values?
-
 Let's start by having some brief overview of the calculation for each Glue Job variant:
+
+|-------------+--------------+-----------------+----------+-------------------------+---------|
+| Price (USD) | Pricing Unit | Billing Counter | Job Type | Minimum Billing Counter | Remarks |
+|:-----------:|:------------:|:---------------:|:--------:|:-----------------------:|:-------:|  
+|0.44|per DPU-hour|per second|Spark / Spark Streaming|1 minute|Glue 2.0 and above|
+|0.44|per DPU-hour|per second|Spark / Spark Streaming|10 minute|Glue 0.9 / Glue 1.0|
+|0.29|per DPU-hour|per second|Spark Flex|1 minute|Glue 3.0 and above|
+|0.44|per M-DPU-hour|per second|Ray|1 minute|NA|
+|0.44|per DPU-hour|per second|Provisioned development endpoint|10 minute|NA|
+|0.44|per DPU-hour|per second|Interactive Session|1 minute|NA|
+|0.44|per DPU-hour|NA|AWS Glue Data Quality|NA|NA|
 
 ## Glue Spark Standard ETL Job
 There are several scenarios due to the number of configuration possibilities:
