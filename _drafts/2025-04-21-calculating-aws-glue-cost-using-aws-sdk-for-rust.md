@@ -159,7 +159,8 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
 As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Excel's `=CEILING(<cell_num>, N))`). Thus, I am defining a custom mathematical function to achieve a similar behavior.
 
-In the above code snippet, you can see that I am using custom math method called `mathutil::ceiling()` which has the following function definition:
+In the above code snippet, you can see that I am using two custom math methods:  
+1. `mathutil::ceiling()`: This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
 // mathutil.rs
@@ -175,6 +176,21 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
             rounded += nearest;
         }
         counter * nearest
+    }
+}
+{% endhighlight %}
+
+2. `precision_f64()`: This method is used when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
+
+{% highlight rust %}
+pub fn precision_f64(x: f64, decimals: u32) -> f64 {
+    if x == 0. || decimals == 0 {
+        0.
+    } else {
+        let shift = decimals as i32 - x.abs().log10().ceil() as i32;
+        let shift_factor = 10_f64.powi(shift);
+
+        (x * shift_factor).round() / shift_factor
     }
 }
 {% endhighlight %}
