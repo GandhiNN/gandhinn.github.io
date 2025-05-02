@@ -159,7 +159,7 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
 As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Excel's `=CEILING(<cell_num>, N))`). Thus, I am defining a custom mathematical function to achieve a similar behavior.
 
-In the above code snippet, you can see that I am using two custom math methods:  
+In the `get_dpu_hours` code snippet, you see that I am using two custom math methods:  
 1. `mathutil::ceiling()`: This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
@@ -194,6 +194,10 @@ pub fn precision_f64(x: f64, decimals: u32) -> f64 {
     }
 }
 {% endhighlight %}
+ 
+You may ask why there are two different methods to round up the calculation based on the job run duration. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits. Another reason is, due to the fact that the API will return the job run time in seconds, while DPU is calculated in an hourly basis, then it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60.
+
+In my experience, when your Glue Job finishes quickly (i.e less than 60 seconds), then the result of `math::ceiling()` will be more aligned with the numbers shown in the Glue Job monitoring dashboard instead if you are using the `precision_f64()` method. For example, a Glue Job that finishes in 45 seconds will be calculated to <TBC> using the `precision_f64()` and <TBC> if we are using the `math::ceiling()` method. 
 
 # 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
@@ -233,7 +237,7 @@ In Glue with auto-scaling enabled, we set the maximum number of workers and let 
 However, this makes our pricing calculation to be quite non-deterministic i.e. we cannot predict the cost upfront, as the AWS Glue Spark cluster dynamically scales out and scales in the executor during job run time.
 
 ## Glue Python Shell
-Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
+Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
 # Conclusion
 When using AWS Glue in your data pipelines, it's important to understand how to calculate your DPU pricing. This understanding can lead to better oversights of your spending, especially when you have a large-scale data platform and you are heavily utilizing an abstracted configuration such as Glue Auto Scaling.
