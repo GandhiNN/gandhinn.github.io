@@ -163,7 +163,8 @@ As far as my knowledge goes, Rust does not provide a standard function to round 
 
 In the `get_dpu_hours` code snippet, I am using two custom math methods:
 
-1. `mathutil::ceiling()` -> This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
+* `mathutil::ceiling()` -> This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
+
 
 {% highlight rust %}
 // mathutil.rs
@@ -183,7 +184,8 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 }
 {% endhighlight %}
 
-2. `precision_f64()` -> This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
+
+* `precision_f64()` -> This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
 pub fn precision_f64(x: f64, decimals: u32) -> f64 {
