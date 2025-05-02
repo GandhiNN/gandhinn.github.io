@@ -1,5 +1,5 @@
 ---
-title:  "AWS Glue Cost calculation using AWS SDK for Rust"
+title:  "AWS Glue Cost Calculation using AWS SDK for Rust"
 seo_title: "aws glue cost calculation using aws sdk for rust"
 seo_description: "aws glue cost calculation using aws sdk for rust"
 date:   2025-05-02 00:00:00 +0700
@@ -22,7 +22,7 @@ AWS Glue Console already provides us with a visual tool for the users to monitor
 4. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
 5. How do we convert AWS Glue DPU-hours into the actual cost in USD?
 
-# 1. What is the main driver for AWS Glue price?
+# 1. What is the main driver for AWS Glue cost?
 AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has a average standard rate of $0.44 per DPU-hour. 
 
 # 2. What is the API to use to get the data related to AWS Glue cost?
@@ -125,7 +125,7 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
     ...
 {% endhighlight %}
 
-# 3. How does we calculate the DPU hours based on the job run time?
+# 3. How do we calculate the DPU hours based on the job run time?
 In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. We can use basic conditional statements to handle different type of Glue Jobs:
 
 {% highlight rust %}
@@ -156,7 +156,7 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 }
 {% endhighlight %}
 
-## Extra: How does we handle rounding up of decimal numbers in Rust?
+## Extra: How do we handle rounding up of decimal numbers in Rust?
 As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Excel's `=CEILING(<cell_num>, N))`). Thus, I am defining a custom mathematical function to achieve a similar behavior.
 
 In the `get_dpu_hours` code snippet, you see that I am using two custom math methods:  
@@ -202,7 +202,7 @@ One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust
 
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
-# 5. How does we convert the DPU hours into monetary values?
+# 5. How do we convert the DPU hours into monetary values?
 Let's start by having some brief overview of the calculation for each Glue Job variant:
 
 |-------------+--------------+-----------------+----------+-------------------------+---------|
@@ -217,14 +217,14 @@ Let's start by having some brief overview of the calculation for each Glue Job v
 |0.44|per DPU-hour|NA|AWS Glue Data Quality|NA|NA|
 
 ## Glue Spark Standard ETL Job
-There are several scenarios due to the number of configuration possibilities:
+There are several scenarios due to the number of configuration possibilities, here are two of the most common ones:
 
-### Scenario 1
+**Scenario 1**
 Condition: AWS Glue Spark job (Glue 3.0) with G1.X worker type that runs with 6 workers for 15 minutes = 6 DPU
 Fact: the price of 1 DPU-hour is $0.44 for Glue Spark job (Glue version 2.0 and above) 
 Calculation: because our job ran for 15 minutes (0.25 hour) and used 6 DPUs, the bill will be = 6 DPU x 0.25 hour x $0.44 → $0.66
 
-### Scenario 2
+**Scenario 2**
 Condition: AWS Glue Spark job (Glue 1.0) with G.4X worker type that runs with 3 workers for 30 minutes = 12 DPU 
 Fact: the price of 1 DPU-hour is $0.44 for Glue Spark Job (Glue 0.9 and Glue 1.0)
 Calculation: because our job ran for 30 minutes (0.5 hour) and used 12 DPUs, the bill will be = 12 DPU x 0.5 hour x $0.44 → $2.64
@@ -237,8 +237,8 @@ However, this makes our pricing calculation to be quite non-deterministic i.e. w
 ## Glue Python Shell
 Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
-# Using the Glue Job Run Cost Calculation
-Enough of the theory, let's run a concrete examples! Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
+# Glue Job Run cost calculation in action
+Enough of the theory, let's run a concrete examples. Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
 
 ![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-05-02-calculating-aws-glue-cost-using-aws-sdk-for-rust/img1-blogpost-20250502.png){: .align-center}
 
