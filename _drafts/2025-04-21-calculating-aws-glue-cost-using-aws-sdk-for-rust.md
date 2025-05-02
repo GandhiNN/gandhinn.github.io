@@ -195,7 +195,7 @@ pub fn precision_f64(x: f64, decimals: u32) -> f64 {
 }
 {% endhighlight %}
  
-You may ask why there's an additional step to round up the Job run time when the job finishes less than 60 seconds. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits, and due to the fact that when the `get_job_run()` API returns the job run time in seconds, the cost is modelled in DPU-hours, i.e. it is calculated in an hourly basis. Then, it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60.
+You may ask why there's an additional step to round up the Job run time when the job finishes less than 60 seconds. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits, and due to the fact that when the `get_job_run()` API returns the job run time in seconds, the cost is modelled in DPU-hours, i.e. it is calculated in an hourly basis. Then, it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60. This additional step ensures that we will have the numbers of DPU hours as close as possible with the numbers shown in the Glue Job Run Monitoring dashboard.
 
 # 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
@@ -238,7 +238,25 @@ However, this makes our pricing calculation to be quite non-deterministic i.e. w
 Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
 # Using the Glue Job Run Cost Calculation
-Enough of the theory, let's run a concrete examples: <TBC>
+Enough of the theory, let's run a concrete examples! Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
+
+[<IMG>]
+
+Here's the result when I queried the job run using my custom functions:
+
+{% highlight bash %}
+      | duration | state     | worker_type | max_capacity | dpu_hours | cost_usd
+---------------------------------+---------------------------------------------------------------------+-----------------------------+-----------------------------+----------+-----------+-------------+--------------+-----------+-----------------------
+ ********** | ********** | 2025-05-02T04:00:26.210999Z | 2025-05-02T04:01:47.026Z    | 35       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-05-01T04:00:26.173Z    | 2025-05-01T04:02:05.4Z      | 47       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-04-30T04:00:26.242Z    | 2025-04-30T04:02:03.282999Z | 40       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-04-29T04:00:26.313999Z | 2025-04-29T04:01:53.619999Z | 35       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-04-28T04:00:26.467Z    | 2025-04-28T04:02:11.681999Z | 35       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-04-27T04:00:26.167Z    | 2025-04-27T04:01:49.9Z      | 32       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+ ********** | ********** | 2025-04-26T04:00:26.161999Z | 2025-04-26T04:02:04.845999Z | 39       | SUCCEEDED | None        | 1            | 0.017     | 0.0074800000000000005
+{% endhighlight %}
+
+We can see that although we are losing a tiny bit of precision in DPU hours (and subsequently the USD cost), we can use this logic as a foundation to do something on top e.g. if we want to build a custom monitoring dashboard with better flexibility and features than the existing dashboard provided by AWS, for example things like historical analytics with longer time frame.
 
 # Conclusion
 When using AWS Glue in your data pipelines, it's important to understand how to calculate your DPU pricing. This understanding can lead to better oversights of your spending, especially when you have a large-scale data platform and you are heavily utilizing an abstracted configuration such as Glue Auto Scaling.
