@@ -25,10 +25,10 @@ AWS Glue Console already provides us with a visual tool for the users to monitor
 This post describes my answer to these questions.
 
 # 1. What is the main driver for AWS Glue cost?
-AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has a average standard rate of $0.44 per DPU-hour. 
+AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has an average standard rate of $0.44 per DPU-hour (you can see a more detailed breakdown later in the post). 
 
 # 2. What is the API to use to get the data related to AWS Glue cost?
-We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given Glue job name, which contains many information that we can use to calculate the cost. In my case, I am starting with defining a container struct to hold the fields that I need:
+We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given AWS Glue job name. This array  contains many information that we can use to calculate the cost. In my code, I defined a container struct to hold the fields that I need to be outputted at the end:
 
 {% highlight rust %}
 use serde::Serialize;
@@ -48,7 +48,7 @@ pub struct Run {
 }
 {% endhighlight %}
 
-Then I built a Glue SDK client struct. Building the client itself is out of scope of this post:
+Then, I defined a Glue SDK client struct. Building the client itself is out of scope of this post:
 
 {% highlight rust %}
 use aws_sdk_glue::{Client, Error, types::WorkerType};
@@ -74,7 +74,7 @@ impl OpClient {
 }
 {% endhighlight %}
 
-Next is I defined a method for `OpClient` which implements the `get_job_run()` API. This method returns a result type which contains a vector of Glue Job runs, serialized to the `Run` struct I've defined earlier, and the possible error variants.
+Next, I defined a `get_job_runs()` method for `OpClient` which implements the `get_job_run()` API under the hood. This method returns a result type which contains a vector of Glue Job runs, serialized to the `Run` struct I've defined earlier. This method also returns possible error variants:
 
 {% highlight rust %}
     ...
@@ -128,7 +128,7 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
 {% endhighlight %}
 
 # 3. How do we calculate the DPU hours based on the job run time?
-In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. We can use basic conditional statements to handle different type of Glue Jobs:
+In the above code snippets, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. In this function, we use some basic conditional statements to handle different type of Glue Jobs. The function is defined as follows:
 
 {% highlight rust %}
 pub fn get_dpu_hours(r: JobRun) -> f64 {
@@ -159,10 +159,11 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 {% endhighlight %}
 
 ## Extra: How do we handle rounding up of decimal numbers in Rust?
-As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Excel's `=CEILING(<cell_num>, N))`). Thus, I am defining a custom mathematical function to achieve a similar behavior.
+As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Microsoft Excel's `=CEILING(<cell_num>, N))` built-in function). As a workaround, I defined some custom mathematical functions to achieve similar behavior.
 
-In the `get_dpu_hours` code snippet, you see that I am using two custom math methods:  
-1. `mathutil::ceiling()`: This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
+In the `get_dpu_hours` code snippet, I am using two custom math methods:
+
+1. `mathutil::ceiling()` -> This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
 // mathutil.rs
@@ -182,7 +183,7 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 }
 {% endhighlight %}
 
-2. `precision_f64()`: This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
+2. `precision_f64()` -> This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
 pub fn precision_f64(x: f64, decimals: u32) -> f64 {
