@@ -237,5 +237,8 @@ However, this makes our pricing calculation to be quite non-deterministic i.e. w
 ## Glue Python Shell
 Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
+# Using the Glue Job Run Cost Calculation
+Enough of the theory, let's run a concrete examples: <TBC>
+
 # Conclusion
 When using AWS Glue in your data pipelines, it's important to understand how to calculate your DPU pricing. This understanding can lead to better oversights of your spending, especially when you have a large-scale data platform and you are heavily utilizing an abstracted configuration such as Glue Auto Scaling.
