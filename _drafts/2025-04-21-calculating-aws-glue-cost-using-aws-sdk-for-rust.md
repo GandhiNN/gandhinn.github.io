@@ -12,19 +12,21 @@ toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-In my workplace, one of my day-to-day responsibilities is overseeing more than 300 data pipelines moving TBs of data daily from all of our affiliates across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours." Simply speaking, in Glue, we are charged for the maximum number of DPUs used, and the total usage duration, at any point during the job execution.
+One of my day-to-day responsibilities at work is to oversee more than 300 data pipelines moving terabytes of data daily from all of our manufacturing facilities across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours." Simply speaking, in Glue, we are charged for the maximum number of DPUs used, and the total usage duration, at any point during the job execution.
 
 AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool which leverages [AWS SDK for Rust](https://aws.amazon.com/sdk-for-rust/) to solve this problem. However, there are some challenges that I need to answer:
 
+0. What is the main driver for AWS Glue price?
 1. What is the API to use to get the data related to AWS Glue cost?
 2. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 3. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
 4. How do we convert AWS Glue DPU-hours into the actual cost in USD?
 
-In this post, I will describe my approach to answer those challenges.
+# 0. What is the main driver for AWS Glue price?
+AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has a average standard rate of $0.44 per DPU-hour. 
 
 # 1. What is the API to use to get the data related to AWS Glue cost?
-I used the `get_job_runs()` API. This API returns an array of Glue Job runs which contains many information that I can use to calculate the cost. In my case, I am starting with defining a container struct to hold the fields that I need:
+We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given Glue job name, which contains many information that we can use to calculate the cost. In my case, I am starting with defining a container struct to hold the fields that I need:
 
 {% highlight rust %}
 use serde::Serialize;
@@ -124,9 +126,7 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
 {% endhighlight %}
 
 # 2. How does we calculate the DPU hours based on the job run time?
-In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. 
-
-Here's the function signature:
+In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. We can use basic conditional statements to handle different type of Glue Jobs:
 
 {% highlight rust %}
 pub fn get_dpu_hours(r: JobRun) -> f64 {
@@ -157,8 +157,9 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 {% endhighlight %}
 
 ## Extra: How does we handle rounding up of decimal numbers in Rust?
-In the above code, you can see that 
-I am defining a custom math method called `mathutil::ceiling()` which has the following function definition:
+As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Excel's `=CEILING(<cell_num>, N))`). Thus, I am defining a custom mathematical function to achieve a similar behavior.
+
+In the above code snippet, you can see that I am using custom math method called `mathutil::ceiling()` which has the following function definition:
 
 {% highlight rust %}
 // mathutil.rs
