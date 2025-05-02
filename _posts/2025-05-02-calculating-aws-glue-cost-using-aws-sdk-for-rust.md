@@ -33,6 +33,8 @@ AWS Glue has many worker types where each type has its own DPU and node configur
 We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given AWS Glue job name. This array  contains many information that we can use to calculate the cost. In my code, I defined a container struct to hold the fields that I need to be outputted at the end:
 
 {% highlight rust %}
+// src/glue.rs
+
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -53,6 +55,8 @@ pub struct Run {
 Then, I defined a Glue SDK client struct. Building the client itself is out of scope of this post:
 
 {% highlight rust %}
+// src/glue.rs
+
 use aws_sdk_glue::{Client, Error, types::WorkerType};
 
 pub struct OpClient {
@@ -79,6 +83,8 @@ impl OpClient {
 Next, I defined a `get_job_runs()` method for `OpClient` which implements the `get_job_run()` API under the hood. This method returns a result type which contains a vector of Glue Job runs, serialized to the `Run` struct I've defined earlier. This method also returns possible error variants:
 
 {% highlight rust %}
+// src/glue.rs
+
     ...
     pub async fn get_job_runs(&self, job_name: &str) -> Result<Vec<Run>, Error> {
         let mut job_runs = self
@@ -133,6 +139,8 @@ Next, I defined a `get_job_runs()` method for `OpClient` which implements the `g
 In the above code snippets, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. In this function, we use some basic conditional statements to handle different type of Glue Jobs. The function is defined as follows:
 
 {% highlight rust %}
+// src/glue.rs
+
 pub fn get_dpu_hours(r: JobRun) -> f64 {
     if r.dpu_seconds.is_none() {
         // Glue Standard (Spark and Python Shell)
@@ -169,7 +177,7 @@ In the `get_dpu_hours` code snippet, I am using two custom math methods:
 
 
 {% highlight rust %}
-// mathutil.rs
+// src/mathutil.rs
 
 pub fn ceiling(num: u64, nearest: u64) -> u64 {
     if num < nearest {
@@ -190,6 +198,8 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 * `precision_f64()` -> This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
+// src/mathutil.rs
+
 pub fn precision_f64(x: f64, decimals: u32) -> f64 {
     if x == 0. || decimals == 0 {
         0.
