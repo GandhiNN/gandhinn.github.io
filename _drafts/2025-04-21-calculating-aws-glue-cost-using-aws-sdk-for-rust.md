@@ -16,16 +16,16 @@ One of my day-to-day responsibilities at work is to oversee more than 300 data p
 
 AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool which leverages [AWS SDK for Rust](https://aws.amazon.com/sdk-for-rust/) to solve this problem. However, there are some challenges that I need to answer:
 
-0. What is the main driver for AWS Glue price?
-1. What is the API to use to get the data related to AWS Glue cost?
-2. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
-3. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
-4. How do we convert AWS Glue DPU-hours into the actual cost in USD?
+1. What is the main driver for AWS Glue price?
+2. What is the API to use to get the data related to AWS Glue cost?
+3. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
+4. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
+5. How do we convert AWS Glue DPU-hours into the actual cost in USD?
 
-# 0. What is the main driver for AWS Glue price?
+# 1. What is the main driver for AWS Glue price?
 AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has a average standard rate of $0.44 per DPU-hour. 
 
-# 1. What is the API to use to get the data related to AWS Glue cost?
+# 2. What is the API to use to get the data related to AWS Glue cost?
 We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given Glue job name, which contains many information that we can use to calculate the cost. In my case, I am starting with defining a container struct to hold the fields that I need:
 
 {% highlight rust %}
@@ -125,7 +125,7 @@ Next is I defined a method for `OpClient` which implements the `get_job_run()` A
     ...
 {% endhighlight %}
 
-# 2. How does we calculate the DPU hours based on the job run time?
+# 3. How does we calculate the DPU hours based on the job run time?
 In the above code, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. We can use basic conditional statements to handle different type of Glue Jobs:
 
 {% highlight rust %}
@@ -179,12 +179,12 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 }
 {% endhighlight %}
 
-# 3. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
+# 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
 
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
-# 4. How does we convert the DPU hours into monetary values?
+# 5. How does we convert the DPU hours into monetary values?
 Let's start by having some brief overview of the calculation for each Glue Job variant:
 
 |-------------+--------------+-----------------+----------+-------------------------+---------|
