@@ -14,13 +14,15 @@ toc_label: "Table of Contents"
 # Overview
 One of my day-to-day responsibilities at work is to oversee more than 300 data pipelines moving terabytes of data daily from all of our manufacturing facilities across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since now we are talking about abstracted metrics i.e what AWS called as "DPU Hours." Simply speaking, in Glue, we are charged for the maximum number of DPUs used, and the total usage duration, at any point during the job execution.
 
-AWS Glue Console already provides us with a visual tool for the users to monitor their Glue Usage. This tool is called "AWS Glue Job Monitoring." However, there are some things that I would like to do which is yet to be made available by AWS. For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool which leverages [AWS SDK for Rust](https://aws.amazon.com/sdk-for-rust/) to solve this problem. However, there are some challenges that I need to answer:
+AWS Glue Console already provides us with a visual tool for the users to monitor their usage of AWS Glue. This tool is called "AWS Glue Job Monitoring." However, there are still some "missing features." For example, there is no feature to export the job's run statistics into tabular formats for further post-processing and analytics. Hence, I decided to build a CLI tool which leverages [AWS SDK for Rust](https://aws.amazon.com/sdk-for-rust/) to solve this problem. During my development journey, there are 5 big questions that I need to answer:
 
 1. What is the main driver for AWS Glue price?
 2. What is the API to use to get the data related to AWS Glue cost?
 3. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 4. How do we convert AWS Glue job runtime into AWS Glue DPU-hours?
 5. How do we convert AWS Glue DPU-hours into the actual cost in USD?
+
+This post describes my answer to these questions.
 
 # 1. What is the main driver for AWS Glue cost?
 AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has a average standard rate of $0.44 per DPU-hour. 
