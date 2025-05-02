@@ -239,13 +239,15 @@ Calculation: because our job ran for 30 minutes (0.5 hour) and used 12 DPUs, the
 ## Case 2: Glue Spark with Auto-Scaling Enabled ETL Job
 In Glue with auto-scaling enabled, we set the maximum number of workers and let AWS Glue monitors the Spark application execution. AWS Glue then allocates more worker (executor) nodes to the cluster in near-real time after Spark requests more executors based on our workload requirements. When there are idle executors that don't have intermediate shuffle data, AWS Glue Auto Scaling removes the executors to save the cost.
 
-However, this makes our pricing calculation to be quite non-deterministic i.e. we cannot predict the cost upfront, as the AWS Glue Spark cluster dynamically scales out and scales in the executor during job run time.
+The downside is this logic makes our pricing calculation to be quite non-deterministic i.e. we cannot predict the cost upfront, as the cluster dynamically scales out and scales in the executor during job run time.
 
 ## Case 3: Glue Python Shell
-Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
+Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs. 
+
+For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
 # Glue Job Run cost calculation in action
-Enough of the theory, let's run a concrete examples. Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
+Enough of theory, let's run a concrete examples. Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
 
 ![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-05-02-calculating-aws-glue-cost-using-aws-sdk-for-rust/img1-blogpost-20250502.png){: .align-center}
 
