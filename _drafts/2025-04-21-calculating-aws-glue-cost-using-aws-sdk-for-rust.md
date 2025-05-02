@@ -180,7 +180,7 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 }
 {% endhighlight %}
 
-2. `precision_f64()`: This method is used when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
+2. `precision_f64()`: This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
 pub fn precision_f64(x: f64, decimals: u32) -> f64 {
@@ -195,9 +195,7 @@ pub fn precision_f64(x: f64, decimals: u32) -> f64 {
 }
 {% endhighlight %}
  
-You may ask why there are two different methods to round up the calculation based on the job run duration. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits. Another reason is, due to the fact that the API will return the job run time in seconds, while DPU is calculated in an hourly basis, then it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60.
-
-In my experience, when your Glue Job finishes quickly (i.e less than 60 seconds), then the result of `math::ceiling()` will be more aligned with the numbers shown in the Glue Job monitoring dashboard instead if you are using the `precision_f64()` method. For example, a Glue Job that finishes in 45 seconds will be calculated to <TBC> using the `precision_f64()` and <TBC> if we are using the `math::ceiling()` method. 
+You may ask why there's an additional step to round up the Job run time when the job finishes less than 60 seconds. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits, and due to the fact that when the `get_job_run()` API returns the job run time in seconds, the cost is modelled in DPU-hours, i.e. it is calculated in an hourly basis. Then, it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60.
 
 # 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
