@@ -2,7 +2,7 @@
 title:  "AWS Glue Cost calculation using AWS SDK for Rust"
 seo_title: "aws glue cost calculation using aws sdk for rust"
 seo_description: "aws glue cost calculation using aws sdk for rust"
-date:   2025-04-21 00:00:00 +0700
+date:   2025-05-02 00:00:00 +0700
 categories:
   - Programming
 tags:
@@ -240,7 +240,7 @@ Glue Python Shell uses the same formula as with the Standard ETL Job variant. Ho
 # Using the Glue Job Run Cost Calculation
 Enough of the theory, let's run a concrete examples! Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
 
-[<IMG>]
+![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-05-02-calculating-aws-glue-cost-using-aws-sdk-for-rust/img1-blogpost-20250502.png){: .align-center}
 
 Here's the result when I queried the job run using my custom functions:
 
