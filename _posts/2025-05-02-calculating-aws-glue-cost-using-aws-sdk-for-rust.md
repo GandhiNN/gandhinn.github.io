@@ -30,9 +30,10 @@ This post describes my answer to these questions.
 
 AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has an average standard rate of $0.44 per DPU-hour.
 
-AWS Glue has many worker types where each type has its own DPU and node configuration. Bigger worker types comes with more DPU per node i.e. it provides higher performances. For example, G.2X type has 2 DPU per node, 8 vCPUs, 32 GB of RAM, and 128 GB of disk whereas G.1X's is half of those numbers. Naturally, using bigger worker types usually means that we have to pay more price, [although it's not always the case](https://aws.amazon.com/blogs/big-data/scale-your-aws-glue-for-apache-spark-jobs-with-new-larger-worker-types-g-4x-and-g-8x/). This is important especially if we are using the Glue Standard ETL Job. In this case, we have to also factor in the number of workers used during the job runtime, which will be explained in more detail later in this post. 
+AWS Glue has many worker types where each type has its own DPU and node configuration. Bigger worker types comes with more DPU per node i.e. it provides higher performances. For example, G.2X type has 2 DPU per node, 8 vCPUs, 32 GB of RAM, and 128 GB of disk whereas G.1X's is half of those numbers. Naturally, using bigger worker types usually means that we have to pay more price, [although it's not always the case](https://aws.amazon.com/blogs/big-data/scale-your-aws-glue-for-apache-spark-jobs-with-new-larger-worker-types-g-4x-and-g-8x/). This is important especially if we are using the Glue Standard ETL Job. In this case, we have to also factor in the number of workers used during the job runtime, which will be explained in more detail later in this post.
 
 # 2. What is the API to use to get the data related to AWS Glue cost?
+
 We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given AWS Glue job name. This array  contains many information that we can use to calculate the cost. In my code, I defined a container struct to hold the fields that I need to be outputted at the end:
 
 {% highlight rust %}
