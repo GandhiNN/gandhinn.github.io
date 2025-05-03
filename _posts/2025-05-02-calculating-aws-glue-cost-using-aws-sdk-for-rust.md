@@ -250,14 +250,14 @@ Condition: AWS Glue Spark job (Glue 3.0) with G1.X worker type that runs with 6 
 \
 Fact: the price of 1 DPU-hour is $0.44 for Glue Spark job (Glue version 2.0 and above).\
 \
-Calculation: because our job ran for 15 minutes (0.25 hour) and used 6 DPUs, the bill will be = 6 DPU x 0.25 hour x $0.44 -> 0.66 USD.\
+Calculation: because our job ran for 15 minutes (0.25 hour) and used 6 DPUs, the bill will be = 6 DPU x 0.25 hour x $0.44 -> 0.66 USD.
 
 **Scenario 2**\
 Condition: AWS Glue Spark job (Glue 1.0) with G.4X worker type that runs with 3 workers for 30 minutes = 12 DPU.\
 \
 Fact: the price of 1 DPU-hour is $0.44 for Glue Spark Job (Glue 0.9 and Glue 1.0).\
 \
-Calculation: because our job ran for 30 minutes (0.5 hour) and used 12 DPUs, the bill will be = 12 DPU x 0.5 hour x $0.44 → 2.64 USD.\
+Calculation: because our job ran for 30 minutes (0.5 hour) and used 12 DPUs, the bill will be = 12 DPU x 0.5 hour x $0.44 → 2.64 USD.
 
 ## Case 2: Glue Spark with Auto-Scaling Enabled ETL Job
 
