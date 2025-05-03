@@ -180,7 +180,6 @@ In the `get_dpu_hours` code snippet, I am using two custom math methods:
 
 * `mathutil::ceiling()` -> This method is used when a job runs less than 1 minute (60 seconds). This function has the following signature:
 
-
 {% highlight rust %}
 // src/mathutil.rs
 
@@ -199,7 +198,6 @@ pub fn ceiling(num: u64, nearest: u64) -> u64 {
 }
 {% endhighlight %}
 
-
 * `precision_f64()` -> This method is used directly when a job runs more or equal than 1 minute (60 seconds). This function has the following signature:
 
 {% highlight rust %}
@@ -216,7 +214,7 @@ pub fn precision_f64(x: f64, decimals: u32) -> f64 {
     }
 }
 {% endhighlight %}
- 
+
 You may ask why there's an additional step to round up the Job run time when the job finishes less than 60 seconds. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits, and due to the fact that when the `get_job_run()` API returns the job run time in seconds, the cost is modelled in DPU-hours, i.e. it is calculated in an hourly basis. Then, it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60. This additional step ensures that we will have the numbers of DPU hours as close as possible with the numbers shown in the Glue Job Run Monitoring dashboard.
 
 # 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
