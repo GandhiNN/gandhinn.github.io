@@ -12,7 +12,7 @@ toc: true
 toc_label: "Table of Contents"
 ---
 
-# Overview
+## Overview
 
 One of my day-to-day responsibilities at work is to oversee more than 300 data pipelines moving terabytes of data daily from all of our manufacturing facilities across the globe. We choose AWS Glue as the go-to technology for data pipelines because of its fully-managed and serverless approach which free us from some management overhead. But as with many AWS services, the pricing model can be a little bit hard to understand since we are using an abstracted metric which AWS described as "DPU Hours." Simply speaking, in Glue, we are charged by the combination of compute hours and the total usage duration, at any point during the job execution.
 
@@ -26,13 +26,13 @@ AWS Glue Console already provides us with a visual tool for the users to monitor
 
 This post describes my answer to these questions.
 
-# 1. What is the main driver for AWS Glue cost?
+## 1. What is the main driver for AWS Glue cost?
 
 AWS Glue cost structure is mainly driven by Data Processing Units (DPUs). DPUs provide the computation power necessary to execute ETL (Extract, Transform, Load) operations of Glue. A DPU consists of 4 vCPUs and 16 GB of memory. AWS Glue is billed on hourly usage which has an average standard rate of $0.44 per DPU-hour.
 
 AWS Glue has many worker types where each type has its own DPU and node configuration. Bigger worker types comes with more DPU per node i.e. it provides higher performances. For example, G.2X type has 2 DPU per node, 8 vCPUs, 32 GB of RAM, and 128 GB of disk whereas G.1X's is half of those numbers. Naturally, using bigger worker types usually means that we have to pay more price, [although it's not always the case](https://aws.amazon.com/blogs/big-data/scale-your-aws-glue-for-apache-spark-jobs-with-new-larger-worker-types-g-4x-and-g-8x/). This is important especially if we are using the Glue Standard ETL Job. In this case, we have to also factor in the number of workers used during the job runtime, which will be explained in more detail later in this post.
 
-# 2. What is the API to use to get the data related to AWS Glue cost?
+## 2. What is the API to use to get the data related to AWS Glue cost?
 
 We can use the `get_job_runs()` API of AWS Glue SDK. This API returns an array of job runs for a given AWS Glue job name. This array  contains many information that we can use to calculate the cost. In my code, I defined a container struct to hold the fields that I need to be outputted at the end:
 
@@ -139,7 +139,7 @@ Next, I defined a `get_job_runs()` method for `OpClient` which implements the `g
     ...
 {% endhighlight %}
 
-# 3. How do we calculate the DPU hours based on the job run time?
+## 3. How do we calculate the DPU hours based on the job run time?
 
 In the above code snippets, you can see a function called `get_dpu_hours()` which is called to get the value of the DPU hours for a particular job runs. In this function, we use some basic conditional statements to handle different type of Glue Jobs. The function is defined as follows:
 
@@ -173,7 +173,7 @@ pub fn get_dpu_hours(r: JobRun) -> f64 {
 }
 {% endhighlight %}
 
-## Extra: How do we handle rounding up of decimal numbers in Rust?
+### Extra: How do we handle rounding up of decimal numbers in Rust?
 
 As far as my knowledge goes, Rust does not provide a standard function to round up floating point numbers to the nearest N number (ala Microsoft Excel's `=CEILING(<cell_num>, N))` built-in function). As a workaround, I defined some custom mathematical functions to achieve similar behavior.
 
@@ -218,13 +218,13 @@ pub fn precision_f64(x: f64, decimals: u32) -> f64 {
 
 You may ask why there's an additional step to round up the Job run time when the job finishes less than 60 seconds. It's basically to align with how AWS Glue Job monitoring dashboard displays the DPU-hours, It displays the DPU hours as floating point numbers with 2 decimal digits, and due to the fact that when the `get_job_run()` API returns the job run time in seconds, the cost is modelled in DPU-hours, i.e. it is calculated in an hourly basis. Then, it means first you have to convert the run time into minutes and then divide it again with 60, hence the logic to round up the calculation into the nearest 60. This additional step ensures that we will have the numbers of DPU hours as close as possible with the numbers shown in the Glue Job Run Monitoring dashboard.
 
-# 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
+## 4. How do we differentiate between Glue Standard, Standard with Auto-Scaling, and Python Shell ETL jobs?
 
 One thing I noticed when working with Glue's `GetJobRun` API in AWS SDK for Rust is, we can differentiate between Glue Standard (both Spark and Python Shell variants) and Glue Auto-Scaling ETL by looking at the value of the response fields.
 
 The Auto-Scaling ETL job will set the value of `dpu_seconds` into `Some(U64)` type and `execution_class` as `None`. On the other hand, Glue Standard Spark ETL jobs variant will set the value of `dpu_seconds` as `None` and `execution_class` as `Some(Standard)`. Finally, The Python Shell variant will have the value of both `dpu_seconds` and `execution_class` as `None`.
 
-# 5. How do we convert the DPU hours into monetary values?
+## 5. How do we convert the DPU hours into monetary values?
 
 Let's start by having some brief overview of the calculation for each Glue Job variant:
 
@@ -241,7 +241,7 @@ Let's start by having some brief overview of the calculation for each Glue Job v
 
 In my workloads, there are 3 main use cases of AWS Glue:
 
-## Case 1: Glue Spark Standard ETL Job
+### Case 1: Glue Spark Standard ETL Job
 
 There are several scenarios due to the number of configuration possibilities, here are two of the most common ones in my daily job:
 
@@ -259,19 +259,19 @@ Fact: the price of 1 DPU-hour is $0.44 for Glue Spark Job (Glue 0.9 and Glue 1.0
 \
 Calculation: because our job ran for 30 minutes (0.5 hour) and used 12 DPUs, the bill will be = 12 DPU x 0.5 hour x $0.44 → 2.64 USD.
 
-## Case 2: Glue Spark with Auto-Scaling Enabled ETL Job
+### Case 2: Glue Spark with Auto-Scaling Enabled ETL Job
 
 In Glue with auto-scaling enabled, we set the maximum number of workers and let AWS Glue monitors the Spark application execution. AWS Glue then allocates more worker (executor) nodes to the cluster in near-real time after Spark requests more executors based on our workload requirements. When there are idle executors that don't have intermediate shuffle data, AWS Glue Auto Scaling removes the executors to save the cost.
 
 The downside is this logic makes our pricing calculation to be quite non-deterministic i.e. we cannot predict the cost upfront, as the cluster dynamically scales out and scales in the executor during job run time.
 
-## Case 3: Glue Python Shell
+### Case 3: Glue Python Shell
 
 Glue Python Shell uses the same formula as with the Standard ETL Job variant. However, we have to handle more carefully the calculation and rounding ups of the DPU-hour because Glue Job Run Monitoring Console could present a false impression of the cost incurred by Glue Python Shell Jobs.
 
 For example, suppose that you have a Python Shell job with 0.0625 DPU configuration which ran for 2 minutes, then the total DPU-hours of this job would be calculated as: (2 / 60) * 0.0625 = 0.00208. The Glue Job Monitoring Console will display this as "0.00" because it handles only up to 2 decimal numbers.
 
-# Glue Job Run cost calculation in action
+## Glue Job Run cost calculation in action
 
 Enough of theory, let's run a concrete examples. Here, I have a Glue Python Shell Job (job name and run id are redacted) which consistently finishes under 1 minute. The Glue Job Run monitoring dashboard displays the DPU hours as 0.02 for all job runs:
 
@@ -293,7 +293,7 @@ Here's the result when I queried the job run using my custom functions:
 
 We can see that although we are losing a tiny bit of precision in DPU hours (and subsequently the USD cost), we can use this logic as a foundation to do something on top e.g. if we want to build a custom monitoring dashboard with better flexibility and features than the existing dashboard provided by AWS, for example things like historical analytics with longer time frame.
 
-# Conclusion
+## Conclusion
 
 When using AWS Glue in your data pipelines, it's important to understand how to calculate your DPU pricing. This understanding can lead to better oversights of your spending, especially when you have a large-scale data platform and you are heavily utilizing an abstracted configuration such as Glue Auto Scaling.
 
