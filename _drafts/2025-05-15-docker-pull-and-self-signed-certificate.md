@@ -1,13 +1,14 @@
 ---
-title:  "Demystifying AWS IAM Identity Center: How It Works with AWS CLI"
-seo_title: "demystifying aws iam identity center: how it works with aws cli"
-seo_description: "demystifying aws iam identity center: how it works with aws cli"
-date:   2025-04-04 00:00:00 +0700
+title:  "Docker Pull and Self-Signed Certificate"
+seo_title: "docker pull and self-signed certificate"
+seo_description: "docker pull and self-signed certificate"
+date:   2025-05-27 00:00:00 +0700
 categories:
   - Programming
 tags:
-  - AWS
-excerpt: "This post details the AWS CLI login flow."
+  - Docker
+  - Linux
+excerpt: "Using Docker Pull behind a transparent proxy could become a mess."
 toc: true
 toc_label: "Table of Contents"
 ---
