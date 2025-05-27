@@ -8,17 +8,17 @@ categories:
 tags:
   - Docker
   - Linux
-excerpt: "Using Docker Pull behind a transparent proxy could become a mess."
+excerpt: "Using Docker Pull behind a transparent proxy could be PITA"
 toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
 TBC
 
-# How IAM Identity Center OIDC Service Works
+# How Docker Pull Works
 TBC
 
-# How AWS CLI Works with IAM OIDC Credentials and Configurations.
+# Trusted Repositories Configuration
 TBC
 
 # Conclusion
