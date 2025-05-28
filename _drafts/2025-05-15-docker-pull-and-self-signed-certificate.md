@@ -20,11 +20,17 @@ ERROR: failed to solve: ghcr.io/cargo-lambda/cargo-lambda:latest: failed to reso
 {% endhighlight %}
 
 # How Docker Pull Works
-When you are pulling the latest version of an image from a Docker registry by executing `docker pull <image>`, then Docker daemon will do the following:
-1. It identifies the image and defaults to the "latest" tag (if the tag version is not specified)
+When you are pulling the latest version of an image from a Docker registry by executing `docker pull cargo-lambda`, then Docker daemon will do the following:
+1. It identifies the `cargo-lambda` image and defaults to the "latest" tag (if the tag version is not specified)
 2. The Docker daemon contacts the registry.
 3. If authentication is required, the user shall prompted to provide valid credentials.
-4. 
+4. The Docker daemon requests the image manifest for the `cargo-lambda:latest` image.
+5. The container registry responds with the manifest, which contains information about the layers and configuration of the `cargo-lambda` image.
+6. The Docker daemon starts downloading the image layers one by one, verifying the integrity.
+7. As the layers are downloaded, Docker daemon assembles them into a complete filesystem, representing the image.
+8. Once the image is fully assembled, it is ready for use as a base for running containers.
+9. If the `cargo-lambda` image has shared layers with other images previously pulled, Docker daemon utilizes the cached layers, reducing download time.
+10. The pulled `cargo-lambda` image is now available on the local machine and can be used to create and run containers.
 
 # Configure Insecure Docker Image Registries
 
