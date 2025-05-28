@@ -13,9 +13,6 @@ toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-TBC
-
-# Problem
 I was trying to pull a docker image from a docker registry but encountered the following error:
 
 {% highlight bash %}
@@ -23,7 +20,11 @@ ERROR: failed to solve: ghcr.io/cargo-lambda/cargo-lambda:latest: failed to reso
 {% endhighlight %}
 
 # How Docker Pull Works
-TBC
+When you are pulling the latest version of an image from a Docker registry by executing `docker pull <image>`, then Docker daemon will do the following:
+1. It identifies the image and defaults to the "latest" tag (if the tag version is not specified)
+2. The Docker daemon contacts the registry.
+3. If authentication is required, the user shall prompted to provide valid credentials.
+4. 
 
 # Configure Insecure Docker Image Registries
 
