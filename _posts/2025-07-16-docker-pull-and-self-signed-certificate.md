@@ -2,13 +2,13 @@
 title:  "Docker Pull and Self-Signed Certificate"
 seo_title: "docker pull and self-signed certificate"
 seo_description: "docker pull and self-signed certificate"
-date:   2025-05-27 00:00:00 +0700
+date:   2025-07-16 00:00:00 +0700
 categories:
   - Programming
 tags:
   - Docker
   - Linux
-excerpt: "Using Docker Pull behind a transparent proxy could be PITA"
+excerpt: "Using Docker Pull behind a transparent proxy could be a PITA..."
 toc: true
 toc_label: "Table of Contents"
 ---
@@ -20,7 +20,10 @@ ERROR: failed to solve: ghcr.io/cargo-lambda/cargo-lambda:latest: failed to reso
 {% endhighlight %}
 
 # How Docker Pull Works
+By default, Docker does not trust an insecure registry without a valid signed certificate. When you are working behind a corporate network, usually there will be a transparent proxy intercepting all HTTPS traffic and replaces the certificate with their own. . Sometimes, this certificate is not known by the third-party registries. Hence, the error mentioning the usage of "self-signed certificate" as shown above.
+
 When you are pulling the latest version of an image from a Docker registry by executing `docker pull cargo-lambda`, then Docker daemon will do the following:
+
 1. It identifies the `cargo-lambda` image and defaults to the "latest" tag (if the tag version is not specified)
 2. The Docker daemon contacts the registry.
 3. If authentication is required, the user shall prompted to provide valid credentials.
@@ -34,7 +37,7 @@ When you are pulling the latest version of an image from a Docker registry by ex
 
 # Configure Insecure Docker Image Registries
 
-The solution is to add registry domain in Docker's `insecure-registries`.
+My solution for the above is to add registry domain in Docker's `insecure-registries`.
 
 Edit or create the file `/etc/docker/daemon.json` and add the following:
 
@@ -45,7 +48,14 @@ Edit or create the file `/etc/docker/daemon.json` and add the following:
 }
 {% endhighlight %}
 
-Then, restart the docker daemon.
+Then, restart the docker daemon. 
+{% highlight bash %}
+# I am using WSL2 so systemd is not the init system
+sudo service docker restart
+{% endhighlight %}
+
+Your image pull should now works.
 
 # Conclusion
-<TBC>
+
+Corporate networks usually add some transparent safeguards (for good reasons) to ensure data protection for its employees. However, the default behavior that the networking services choose for some workflows could be confusing, especially to the power users within the company. One workaround for the common Docker workflow has been explained above. Feel free to follow and adapt but use it on your own risk. 
