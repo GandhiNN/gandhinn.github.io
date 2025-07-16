@@ -24,7 +24,7 @@ tls: failed to verify certificate: x509: certificate signed by unknown authority
 {% endhighlight %}
 
 # How Docker Pull Works
-By default, Docker does not trust an insecure registry without a valid signed certificate. When you are working behind a corporate network, usually there will be a transparent proxy intercepting all HTTPS traffic and replaces the certificate with their own. . Sometimes, this certificate is not known by the third-party registries. Hence, the error mentioning the usage of "self-signed certificate" as shown above.
+By default, Docker does not trust an insecure registry without a valid signed certificate. When you are working behind a corporate network, usually there will be a transparent proxy intercepting all HTTPS traffic and replaces the certificate with their own. Sometimes this certificate is not known by the third-party registries. Hence, the error mentioning the usage of "self-signed certificate" as shown above.
 
 When you are pulling the latest version of an image from a Docker registry by executing `docker pull cargo-lambda`, then Docker daemon will do the following:
 
