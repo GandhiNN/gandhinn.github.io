@@ -52,13 +52,14 @@ Edit or create the file `/etc/docker/daemon.json` and add the following:
 }
 {% endhighlight %}
 
-Then, restart the docker daemon. 
+Then, restart the docker daemon:
+
 {% highlight bash %}
 # I am using WSL2 so systemd is not the init system
 sudo service docker restart
 {% endhighlight %}
 
-Your image pull should now works.
+Your image pull should now works!
 
 # Conclusion
 
