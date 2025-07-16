@@ -63,4 +63,4 @@ Your image pull should now works!
 
 # Conclusion
 
-Corporate networks usually add some transparent safeguards (for good reasons) to ensure data protection for its employees. However, the default behavior that the networking services choose for some workflows could be confusing, especially to the power users within the company. One workaround for the common Docker workflow has been explained above. Feel free to follow and adapt but use it on your own risk. 
+Corporate networks usually add some transparent safeguards (for good reasons) to ensure data protection for its employees. However, the default behavior that the networking services choose for some workflows could be confusing, especially to the power users within the company. One workaround for the common Docker workflow has been explained above. Feel free to follow and adapt but use it at your own risk. 
