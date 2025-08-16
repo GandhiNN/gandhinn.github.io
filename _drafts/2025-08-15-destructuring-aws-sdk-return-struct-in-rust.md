@@ -66,8 +66,8 @@ impl Role {
 }
 {% endhighlight %}
 
-# Using the struct's attributes or the implemented APIs?
-TBC
+## Using the struct's attributes or the implemented APIs?
+Notice that the struct `Role` has methods which take reference to itself to retrieve its attributes' references. This is useful, for example, if we are creating an external function to retrieve the values of roles that we have in our AWS tenant and use them for further processing downstream.
 
 # Using it in practice
 TBC
