@@ -1,22 +1,22 @@
 ---
-title:  "Destructuring the Returned Struct in AWS SDK for Rust"
-seo_title: "destructuring the returned struct in aws sdk for rust"
-seo_description: "destructuring the returned struct in aws sdk for rust"
-date:   2025-08-15 00:00:00 +0700
+title:  "Handling AWS SDK Items Effectively in Rust"
+seo_title: "handling aws sdk items effectively in rust"
+seo_description: "handling aws sdk items effectively in rust"
+date:   2025-08-18 00:00:00 +0700
 categories:
   - Programming
 tags:
   - Rust
-excerpt: "This post will describe how to destructure the returned struct from AWS SDK for Rust while avoiding cloning the whole object."
+excerpt: "This post will describe how to handle AWS SDK items efficiently in AWS SDK for Rust by avoiding unnecessary object cloning."
 toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-TBC
+I was developing an audit tool to programatically retrieve all the IAM access key roles attributes e.g. users owning the key pairs, active/inactive status of the keys, creation date, and last used date.   
+
+I am using `aws_sdk_iam` crate.
 
 # Common type definition of AWS SDK for Rust
-I'll be using `aws_sdk_iam` as the reference in this post.
-
 The following structure is returned as a response element in several API operations that interact with IAM roles. You'll also find the similar structure in many crates of AWS SDK for Rust:
 
 {% highlight rust %}
