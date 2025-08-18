@@ -14,7 +14,7 @@ toc_label: "Table of Contents"
 # Overview
 I was developing an audit tool to programatically retrieve all the IAM access key roles attributes e.g. users owning the key pairs, active/inactive status of the keys, creation date, and last used date.   
 
-# In Practice
+# In Practice: `clone()` everywhere
 Let's say that we want to retrieve all IAM users configured in our AWS tenant. We will start by defining a new type to store the information:
 
 {% highlight rust %}
@@ -164,20 +164,26 @@ An implementation consists of definitions of functions and constants. A function
 
 Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that it has (plus a dedicated `builder()` method, which is used if we want to build the item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
 
-## Using the struct's attributes or the implemented APIs?
 Notice that the struct `Role` has methods which take reference to itself to retrieve its attributes' references. This is useful, for example, if we are creating an external function to retrieve the values of roles that we have in our AWS tenant and use them for further processing downstream.
 
 **Notice:** The RTFM Section Ends.
 {: .notice}
 
+# Fixing it: calling the implemented APIs to avoid extra memory allocations
+TBC
+
 # Profiling memory allocation in Rust using `Heaptrack`
-Heaptrack is a tool that allows us to generate memory usage reports.
+[Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
 
+Heaptrack traces all memory allocations and annotates these events with stack traces. Some important metrics are memory footprints, memory leaks, memory allocation hotspots, and temporary allocations.
 
+On Ubuntu (22.04) heaptrack can be installed via `apt`:
 
-# Using it in practice
- 
+{% highlight bash %}
+sudo apt install heaptrack heaptrack-gui
+{% endhighlight %}
 
+TBC
 
 # Conclusion
 TBC
