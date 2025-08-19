@@ -15,7 +15,7 @@ toc_label: "Table of Contents"
 I was building an audit tool designed to programmatically retrieve key attributes related to IAM access keys. This includes identifying the users associated with each key pair, determining whether the keys are active or inactive, and capturing metadata such as creation dates and last used timestamps. The goal was to streamline visibility into access key usage across the environment.  
 
 # Using `clone()` Everywhere 
-I was starting by defining a new type to store the required information:
+I began by defining a custom type to capture the necessary information:
 
 {% highlight rust %}
 use serde::Serialize;
@@ -34,7 +34,7 @@ pub struct Role {
 let mut roles: Vec<Role> = Vec::new();
 {% endhighlight %}
 
-The next thing I did is to iterate through the paginated stream of the `aws_sdk_iam::Client`'s `list_roles()` API:
+Next, I iterated through the paginated stream returned by the `list_roles()` API from `aws_sdk_iam::Client`.
 
 {% highlight rust %}
 
