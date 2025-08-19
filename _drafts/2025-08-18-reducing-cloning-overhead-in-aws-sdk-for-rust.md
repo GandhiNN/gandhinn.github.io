@@ -206,7 +206,7 @@ While the updated code still compiles successfully and produces the same output 
 # Profiling memory allocation in Rust using `Heaptrack`
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
 
-Heaptrack traces all memory allocations and annotates these events with stack traces. Some important metrics produced by it are memory footprints, memory leaks, memory allocation hotspots, and temporary allocations.
+Heaptrack monitors all memory allocations and enriches them with stack traces, providing key insights such as memory footprint, leaks, allocation hot spots, and transient allocations.
 
 Heaptrack is split into two parts:
 
