@@ -1,7 +1,7 @@
 ---
-title:  "Effective Memory Allocation: A Case Study Using AWS SDK for Rust"
-seo_title: "effective memory allocation: a case study using aws sdk for rust"
-seo_description: "effective memory allocation: a case study using aws sdk for rust"
+title:  "Reducing Cloning Overhead in AWS SDK for Rust"
+seo_title: "Reducing Cloning Overhead in AWS SDK for Rust"
+seo_description: "Reducing Cloning Overhead in AWS SDK for Rust"
 date:   2025-08-18 00:00:00 +0700
 categories:
   - Programming
