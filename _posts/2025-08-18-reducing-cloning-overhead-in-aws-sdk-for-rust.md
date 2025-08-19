@@ -76,7 +76,7 @@ println!("{:#?}", roles);
 The Rust compiler will throw an error:
 
 {% highlight bash %}
-error[E0382]: use of moved value: `r`
+cannot move out of r.role_id which is behind a shared reference.
 {% endhighlight %}
 
 The error message indicates that `r` is of type `&aws_sdk_iam::types::Role`, meaning it's a shared reference to a `Role` struct. When I first access the path field using the dot (.) operator, Rust automatically dereferences `r` to retrieve the value. However, on subsequent access, such as retrieving `role_id`, the compiler throws an error because the original reference has already been dereferenced, and Rust's borrowing rules prevent reusing it in that context. 
@@ -113,6 +113,8 @@ With these changes, the code now compiles successfully. However, it introduces a
 Rust’s powerful RAII (Resource Acquisition Is Initialization) paradigm offers robust memory management capabilities. However, since RAM remains a finite resource, it's crucial to stay vigilant and intentional about how memory is allocated and used, especially in performance-critical applications. Understanding and optimizing allocation patterns can make a significant difference in overall efficiency. 
 
 Frequent use of the `clone()` operation is often a red flag when it comes to efficient memory management. For instance, if the `r` object is 50 KB in size, cloning it effectively doubles the memory footprint to 100 KB at runtime. In a concurrent environment handling 1,000 `r` objects simultaneously, this could result in an additional 100 MB of memory allocation per second—quickly adding up and potentially impacting system performance. 
+
+Let's take a step back and RTFM from AWS SDK for Rust documentation.
 
 **Notice:** The RTFM Section Starts.
 {: .notice}
@@ -211,7 +213,7 @@ Heaptrack monitors all memory allocations and enriches them with stack traces, p
 Heaptrack is split into two parts:
 
 1. The data collector, i.e. the `heaptrack` binary itself.
-2. The analyzer GUI called `heaptrack_gui` (needs Qt5 and KF5 dependencies; make sure both are available in your OS) 
+2. The analyzer GUI called `heaptrack_gui` (it needs Qt5 and KF5 dependencies; make sure both are available in your OS) 
 
 On Ubuntu (22.04) Heaptrack can be installed via `apt`:
 
@@ -242,7 +244,7 @@ heaptrack_gui heaptrack.cargo.10397.zst
 heaptrack_gui heaptrack.cargo.8423.zst
 {% endhighlight %}
 
-In my analysis, I focused on the "Summary" and "Allocations" tabs to monitor memory usage trends over time. One key insight was that leveraging clone() significantly impacts memory behavior—specifically, it nearly doubles the number of allocations during runtime. This observation highlights the importance of being mindful about cloning operations, especially in performance-sensitive contexts.
+In my analysis, I focused on the "Summary" and "Allocations" tabs to monitor memory usage trends over time. One key insight was that leveraging clone() significantly impacts memory behavior, specifically, it nearly doubles the number of allocations during runtime. This observation highlights the importance of being mindful about cloning operations, especially in performance-sensitive contexts.
 
 |--------------+-----------------|
 | With Cloning | Without Cloning |  
