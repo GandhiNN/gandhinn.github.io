@@ -210,13 +210,23 @@ The code will compile and produce the same results as it was before. However, ho
 
 Heaptrack traces all memory allocations and annotates these events with stack traces. Some important metrics produced by it are memory footprints, memory leaks, memory allocation hotspots, and temporary allocations.
 
-On Ubuntu (22.04) heaptrack can be installed via `apt`:
+Heaptrack is split into two parts:
+
+1. The data collector, i.e. the `heaptrack` binary itself.
+2. The analyzer GUI called `heaptrack_gui` (needs Qt5 and KF5 dependencies; make sure both are available in your OS) 
+
+On Ubuntu (22.04) Heaptrack can be installed via `apt`:
 
 {% highlight bash %}
 sudo apt install heaptrack heaptrack-gui
 {% endhighlight %}
 
-TBC
+Heaptrack works with Rust binaries out of the box i.e. don't run it like `heaptrack cargo run`, as this will profile Cargo's memory usage instead of our application. The Rust programs should also include the corresponding symbols. This means that if you are building in release mode, make sure debug symbols are enabled in Cargo.toml:
+
+{% highlight toml %}
+[profile.release]
+debug = true
+{% endhighlight toml %}
 
 # Conclusion
 TBC
