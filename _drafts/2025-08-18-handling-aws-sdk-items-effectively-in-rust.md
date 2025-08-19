@@ -235,14 +235,16 @@ heaptrack target/release/iam_role_with_cloning
 heaptrack target/release/iam_role_without_cloning
 {% endhighlight %}
 
-Afterwards, heaptrack writes gzipped result files for each profiled binary.
+Afterwards, heaptrack writes gzipped result files for each profiled binary and then we can inspect and visualize the results into graphs using `heaptrack_gui`. 
 
-We can inspect and visualize the results into graphs using `heaptrack_gui`. An example usage looks like this:
+An example usage looks like this:
 
 {% highlight bash %}
 heaptrack_gui heaptrack.cargo.10397.zst
 heaptrack_gui heaptrack.cargo.8423.zst
 {% endhighlight %}
+
+In my case, I used the "Summary" and "Allocations" tab to take a look at memory allocations over time and I could see that using `clone()` will roughly double the number of memory allocations during runtime.
 
 # Conclusion
 TBC
