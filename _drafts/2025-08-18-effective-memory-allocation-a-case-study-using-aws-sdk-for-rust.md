@@ -12,10 +12,10 @@ toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-I was developing an audit tool to programmatically retrieve all the IAM access key roles attributes e.g. users owning the key pairs, active/inactive status of the keys, creation date, and last used date.   
+I was building an audit tool designed to programmatically retrieve key attributes related to IAM access keys. This includes identifying the users associated with each key pair, determining whether the keys are active or inactive, and capturing metadata such as creation dates and last used timestamps. The goal was to streamline visibility into access key usage across the environment.  
 
 # Using `clone()` Everywhere 
-Let's say that we want to retrieve all IAM users configured in our AWS tenant. We will start by defining a new type to store the information:
+I was starting by defining a new type to store the required information:
 
 {% highlight rust %}
 use serde::Serialize;
@@ -34,7 +34,7 @@ pub struct Role {
 let mut roles: Vec<Role> = Vec::new();
 {% endhighlight %}
 
-The next thing we do is to iterate through the paginated stream of the `aws_sdk_iam::Client`'s `list_roles()` API:
+The next thing I did is to iterate through the paginated stream of the `aws_sdk_iam::Client`'s `list_roles()` API:
 
 {% highlight rust %}
 
@@ -79,9 +79,9 @@ The Rust compiler will throw an error:
 error[E0382]: use of moved value: `r`
 {% endhighlight %}
 
-The error message means us that `r` has the type of `&aws_sdk_iam::types::Role` i.e. it's a shared reference to `Role` struct. The compiler throws us an error because when the first time we are accessing the field `path` by using `.` operator, it will automatically dereference the `Role` as necessary. Hence, the next time we try to access the field `role_id`, the original `r` object no longer points to anything as it has been dereferenced before. 
+The error message indicates that `r` is of type `&aws_sdk_iam::types::Role`, meaning it's a shared reference to a `Role` struct. When I first access the path field using the dot (.) operator, Rust automatically dereferences `r` to retrieve the value. However, on subsequent access, such as retrieving `role_id`, the compiler throws an error because the original reference has already been dereferenced, and Rust's borrowing rules prevent reusing it in that context. 
 
-One of the suggestions coming from the compiler to work around the issue is to clone the value of `r`. Hence, we might be tempted to do like the following:
+One of the compiler's suggestions to resolve the issue is to clone the value of `r`. While this might seem like a quick fix, it's easy to fall into the trap of doing something like the following, without fully considering the impact on memory usage and performance:
 
 {% highlight bash %}
 // ...
@@ -108,11 +108,11 @@ One of the suggestions coming from the compiler to work around the issue is to c
 // ...
 {% endhighlight %}
 
-Now the code will compile. However, it comes with some extra memory allocations because we are cloning the whole `r` object everytime we retrieve its attribute and assign it into our custom `Role` struct.
+With these changes, the code now compiles successfully. However, it introduces additional memory allocations, as we're cloning the entire `r` object each time we access one of its attributes to populate our custom `Role` struct. While functionally correct, this approach can be inefficient—especially in scenarios where performance and memory usage are critical.
 
-Even though Rust is a powerful programming language with its RAII paradigm, given that RAM is still a limited resource, it is important for us to be aware and prudent on what is going on with the memory, especially the allocation processes. 
+Rust’s powerful RAII (Resource Acquisition Is Initialization) paradigm offers robust memory management capabilities. However, since RAM remains a finite resource, it's crucial to stay vigilant and intentional about how memory is allocated and used, especially in performance-critical applications. Understanding and optimizing allocation patterns can make a significant difference in overall efficiency. 
 
-The many usages of `clone()` operation is not a good sign that we are. If the size of `r` object is 50 KB, cloning will double that to 100 KB during runtime. In a concurrent environment, if the code is handling 1000 `r` object at a same time, that will be an extra allocation of 100 MB per second. 
+Frequent use of the `clone()` operation is often a red flag when it comes to efficient memory management. For instance, if the `r` object is 50 KB in size, cloning it effectively doubles the memory footprint to 100 KB at runtime. In a concurrent environment handling 1,000 `r` objects simultaneously, this could result in an additional 100 MB of memory allocation per second—quickly adding up and potentially impacting system performance. 
 
 **Notice:** The RTFM Section Starts.
 {: .notice}
