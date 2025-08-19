@@ -244,5 +244,11 @@ heaptrack_gui heaptrack.cargo.8423.zst
 
 In my analysis, I focused on the "Summary" and "Allocations" tabs to monitor memory usage trends over time. One key insight was that leveraging clone() significantly impacts memory behavior—specifically, it nearly doubles the number of allocations during runtime. This observation highlights the importance of being mindful about cloning operations, especially in performance-sensitive contexts.
 
+|--------------+-----------------|
+| With Cloning | Without Cloning |  
+|:------------:|:---------------:|  
+|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_with_cloning-summary-20250815.png){: .align-center}|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_with_cloning-20250815.png){: .align-center}|
+|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_without_cloning-summary-20250815.png){: .align-center}|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_without_cloning-20250815.png){: .align-center}|
+
 # Conclusion
 TBC
