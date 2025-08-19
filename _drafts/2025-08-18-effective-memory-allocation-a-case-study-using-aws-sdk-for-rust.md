@@ -1,7 +1,7 @@
 ---
-title:  "Handling AWS SDK Items Effectively in Rust"
-seo_title: "handling aws sdk items effectively in rust"
-seo_description: "handling aws sdk items effectively in rust"
+title:  "Effective Memory Allocation: A Case Study Using AWS SDK for Rust"
+seo_title: "effective memory allocation: a case study using aws sdk for rust"
+seo_description: "effective memory allocation: a case study using aws sdk for rust"
 date:   2025-08-18 00:00:00 +0700
 categories:
   - Programming
