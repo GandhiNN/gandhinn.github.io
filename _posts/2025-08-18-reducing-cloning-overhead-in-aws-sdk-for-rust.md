@@ -14,7 +14,7 @@ toc_label: "Table of Contents"
 # Overview
 I was building an audit tool designed to programmatically retrieve key attributes related to IAM access keys. This includes identifying the users associated with each key pair, determining whether the keys are active or inactive, and capturing metadata such as creation dates and last used timestamps. The goal was to streamline visibility into access key usage across the environment.  
 
-# Using `clone()` Everywhere 
+# Using `clone()` everywhere 
 I began by defining a custom type to capture the necessary information:
 
 {% highlight rust %}
@@ -117,7 +117,7 @@ Frequent use of the `clone()` operation is often a red flag when it comes to eff
 **Notice:** The RTFM Section Starts.
 {: .notice}
 
-## Common type definition of AWS SDK for Rust
+## Common Type Definition in AWS SDK for Rust
 Most of the structs that you will see in AWS SDK for Rust usually will have the following type definition. For example, the following snippet is the definition `Role` struct in the `aws_sdk_iam` crate:
 
 {% highlight rust %}
@@ -171,7 +171,7 @@ In the AWS SDK for Rust, most items or structs typically come with a consistent 
 **Notice:** The RTFM Section Ends.
 {: .notice}
 
-# Minimize Allocation by Using the Implemented APIs to Retrieve the Attributes
+# Reduce Allocations with Built-In Accessors
 To avoid unnecessary heap allocations when cloning the r object, it's more efficient to utilize the built-in methods provided by the `aws_sdk_iam::Role` struct. These methods accept a reference to the struct (`&self`) and return a reference to the desired field, eliminating the need for cloning. For instance, calling `role_id(&self)` returns a `&str` that directly references the value of the `role_id` field, streamlining memory usage without sacrificing readability.
 
 Here is the updated code:
@@ -203,7 +203,7 @@ Here is the updated code:
 
 While the updated code still compiles successfully and produces the same output as before, the real question is: does it actually reduce memory allocations compared to the previous version? To validate this improvement, we need to go beyond functional correctness and examine the runtime behavior more closely.
 
-# Profiling memory allocation in Rust using `Heaptrack`
+# Profiling Memory Allocation in Rust Using `Heaptrack`
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
 
 Heaptrack monitors all memory allocations and enriches them with stack traces, providing key insights such as memory footprint, leaks, allocation hot spots, and transient allocations.
