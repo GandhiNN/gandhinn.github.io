@@ -166,15 +166,13 @@ In Rust, an implementation consists of definitions of functions and constants. A
 
 2. A method-call, meaning the function takes the struct (either `self`, `&self`, or `&mut self`) as its first argument to return some value. One example of this is `vec.len()` method.
 
-Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that they have (also a dedicated `builder()` method, which is useful if we want to instantiate a new item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
-
-Notice that the struct `Role` has methods which take reference to itself to retrieve its attributes' references. This is useful, for example, if we are creating an external function to retrieve the values of roles that we have in our AWS tenant and use them for further processing downstream.
+In the AWS SDK for Rust, most items or structs typically come with a consistent set of method implementations that mirror their attributes. These include accessor methods and a dedicated `builder()` function, handy for creating new instances, though that's beyond the scope of this discussion. Taking the `Role` struct as an example, you can expect it to provide methods corresponding to its fields, such as `role_id()`, which allows you to retrieve the value of the `role_id` attribute directly.
 
 **Notice:** The RTFM Section Ends.
 {: .notice}
 
 # Minimize Allocation by Using the Implemented APIs to Retrieve the Attributes
-To avoid extra heap allocation for the cloned `r` object, we can use the built-in methods already defined for the `aws_sdk_iam::Role` struct which takes a reference to itself (`&self`) as the first argument, which returns a reference containing the field's value. For example, the method `role_id(&self)` returns a `&str` containing the value of the `role_id` field.
+To avoid unnecessary heap allocations when cloning the r object, it's more efficient to utilize the built-in methods provided by the `aws_sdk_iam::Role` struct. These methods accept a reference to the struct (`&self`) and return a reference to the desired field, eliminating the need for cloning. For instance, calling `role_id(&self)` returns a `&str` that directly references the value of the `role_id` field, streamlining memory usage without sacrificing readability.
 
 Here is the updated code:
 
@@ -203,7 +201,7 @@ Here is the updated code:
 // ...
 {% endhighlight %}
 
-The code will compile and produce the same results as it was before. However, how can we be sure that the updated code consumes less allocation than the previous version?
+While the updated code still compiles successfully and produces the same output as before, the real question is: does it actually reduce memory allocations compared to the previous version? To validate this improvement, we need to go beyond functional correctness and examine the runtime behavior more closely.
 
 # Profiling memory allocation in Rust using `Heaptrack`
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
@@ -221,7 +219,7 @@ On Ubuntu (22.04) Heaptrack can be installed via `apt`:
 sudo apt install heaptrack heaptrack-gui
 {% endhighlight %}
 
-Heaptrack works with Rust binaries out of the box i.e. don't run it like `heaptrack cargo run`, as this will profile Cargo's memory usage instead of our application. The Rust programs should also include the corresponding symbols. This means that if you are building in release mode, make sure debug symbols are enabled in Cargo.toml:
+Heaptrack supports Rust binaries natively, so it's important to run it directly on your compiled application, not via heaptrack cargo run, which would end up profiling Cargo itself rather than your actual code. Additionally, ensure your Rust binaries include the necessary debug symbols. If you're building in release mode, double-check that debug symbols are enabled in your Cargo.toml to get meaningful profiling results.:
 
 {% highlight toml %}
 [profile.release]
@@ -244,7 +242,7 @@ heaptrack_gui heaptrack.cargo.10397.zst
 heaptrack_gui heaptrack.cargo.8423.zst
 {% endhighlight %}
 
-In my case, I used the "Summary" and "Allocations" tab to take a look at memory allocations over time and I could see that using `clone()` will roughly double the number of memory allocations during runtime.
+In my analysis, I focused on the "Summary" and "Allocations" tabs to monitor memory usage trends over time. One key insight was that leveraging clone() significantly impacts memory behavior—specifically, it nearly doubles the number of allocations during runtime. This observation highlights the importance of being mindful about cloning operations, especially in performance-sensitive contexts.
 
 # Conclusion
 TBC
