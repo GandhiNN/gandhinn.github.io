@@ -166,7 +166,7 @@ In Rust, an implementation consists of definitions of functions and constants. A
 
 2. A method-call, meaning the function takes the struct (either `self`, `&self`, or `&mut self`) as its first argument to return some value. One example of this is `vec.len()` method.
 
-Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that it has (plus a dedicated `builder()` method, which is used if we want to build the item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
+Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that they have (also a dedicated `builder()` method, which is useful if we want to instantiate a new item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
 
 Notice that the struct `Role` has methods which take reference to itself to retrieve its attributes' references. This is useful, for example, if we are creating an external function to retrieve the values of roles that we have in our AWS tenant and use them for further processing downstream.
 
@@ -227,6 +227,22 @@ Heaptrack works with Rust binaries out of the box i.e. don't run it like `heaptr
 [profile.release]
 debug = true
 {% endhighlight toml %}
+
+An example usage for the above code looks like this:
+
+{% highlight bash %}
+heaptrack target/release/iam_role_with_cloning
+heaptrack target/release/iam_role_without_cloning
+{% endhighlight %}
+
+Afterwards, heaptrack writes gzipped result files for each profiled binary.
+
+We can inspect and visualize the results into graphs using `heaptrack_gui`. An example usage looks like this:
+
+{% highlight bash %}
+heaptrack_gui heaptrack.cargo.10397.zst
+heaptrack_gui heaptrack.cargo.8423.zst
+{% endhighlight %}
 
 # Conclusion
 TBC
