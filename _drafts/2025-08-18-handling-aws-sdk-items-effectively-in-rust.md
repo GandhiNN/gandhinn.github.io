@@ -12,9 +12,9 @@ toc: true
 toc_label: "Table of Contents"
 ---
 # Overview
-I was developing an audit tool to programatically retrieve all the IAM access key roles attributes e.g. users owning the key pairs, active/inactive status of the keys, creation date, and last used date.   
+I was developing an audit tool to programmatically retrieve all the IAM access key roles attributes e.g. users owning the key pairs, active/inactive status of the keys, creation date, and last used date.   
 
-# In Practice: `clone()` everywhere
+# Using `clone()` Everywhere 
 Let's say that we want to retrieve all IAM users configured in our AWS tenant. We will start by defining a new type to store the information:
 
 {% highlight rust %}
@@ -79,7 +79,9 @@ The Rust compiler will throw an error:
 error[E0382]: use of moved value: `r`
 {% endhighlight %}
 
-One of the suggestions coming from the compiler is to clone the value of `r`, so we might be tempted to do like the following:
+The error message means us that `r` has the type of `&aws_sdk_iam::types::Role` i.e. it's a shared reference to `Role` struct. The compiler throws us an error because when the first time we are accessing the field `path` by using `.` operator, it will automatically dereference the `Role` as necessary. Hence, the next time we try to access the field `role_id`, the original `r` object no longer points to anything as it has been dereferenced before. 
+
+One of the suggestions coming from the compiler to work around the issue is to clone the value of `r`. Hence, we might be tempted to do like the following:
 
 {% highlight bash %}
 // ...
@@ -169,7 +171,7 @@ Notice that the struct `Role` has methods which take reference to itself to retr
 **Notice:** The RTFM Section Ends.
 {: .notice}
 
-# Fixing it: calling the implemented APIs to avoid extra memory allocations
+# Minimize Allocation by Using the Implemented APIs to Retrieve the Attributes
 TBC
 
 # Profiling memory allocation in Rust using `Heaptrack`
