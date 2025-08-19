@@ -118,7 +118,7 @@ The many usages of `clone()` operation is not a good sign that we are. If the si
 {: .notice}
 
 ## Common type definition of AWS SDK for Rust
-Most of the struct that you will see in AWS SDK for Rust usually will have the following type definition. Here, I'm using the `Role` struct in `aws_sdk_iam` crate:
+Most of the structs that you will see in AWS SDK for Rust usually will have the following type definition. For example, the following snippet is the definition `Role` struct in the `aws_sdk_iam` crate:
 
 {% highlight rust %}
 #[non_exhaustive]
@@ -164,7 +164,7 @@ In Rust, an implementation consists of definitions of functions and constants. A
 
 1. Standalone, meaning it does not take the struct as the argument, and will result in a new and standalone object. One example of this is `Vec::new()` which is used to create a new vector object.
 
-2. A method-call, meaning the function takes the struct (either `self`, `&self`, or `&mut self`) as its first argument. One example of this is `vec.len()` method.
+2. A method-call, meaning the function takes the struct (either `self`, `&self`, or `&mut self`) as its first argument to return some value. One example of this is `vec.len()` method.
 
 Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that it has (plus a dedicated `builder()` method, which is used if we want to build the item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
 
@@ -174,7 +174,13 @@ Notice that the struct `Role` has methods which take reference to itself to retr
 {: .notice}
 
 # Minimize Allocation by Using the Implemented APIs to Retrieve the Attributes
+To avoid extra heap allocation for the cloned `r` object, we can use the built-in methods already defined for the `aws_sdk_iam::Role` struct which takes a reference to itself (`&self`) as the first argument, which returns a reference containing the field's value. For example, the method `role_id(&self)` returns a `&str` containing the value of the `role_id` field.
+
+Here is the updated code:
+
+{% highlight rust %}
 TBC
+{% endhighlight %}
 
 # Profiling memory allocation in Rust using `Heaptrack`
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
