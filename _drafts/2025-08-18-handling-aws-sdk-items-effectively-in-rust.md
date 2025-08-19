@@ -160,8 +160,10 @@ There are two uses of the `impl` keyword:
 1. An `impl Trait` which can be used to designate a type that implements a trait called `Trait`.
 2. An `impl` block which is used to implement some functionality for a type => **This is what we'll be focusing on this post**.
 
-An implementation consists of definitions of functions and constants. A function defined in an `impl` block can be:
+In Rust, an implementation consists of definitions of functions and constants. A function defined in an `impl` block can be:
+
 1. Standalone, meaning it does not take the struct as the argument, and will result in a new and standalone object. One example of this is `Vec::new()` which is used to create a new vector object.
+
 2. A method-call, meaning the function takes the struct (either `self`, `&self`, or `&mut self`) as its first argument. One example of this is `vec.len()` method.
 
 Items (or structs) in AWS SDK for Rust usually has the same set of implementation method call with the attributes that it has (plus a dedicated `builder()` method, which is used if we want to build the item, but it's outside the scope of this post). It means that, if we use the above `Role` struct's attributes as the reference, this item will also have the following methods:
