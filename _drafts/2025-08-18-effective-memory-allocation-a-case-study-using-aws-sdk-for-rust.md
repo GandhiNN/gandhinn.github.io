@@ -7,7 +7,7 @@ categories:
   - Programming
 tags:
   - Rust
-excerpt: "This post will describe how to handle AWS SDK items efficiently in AWS SDK for Rust by avoiding unnecessary object cloning."
+excerpt: "This post explores how to handle AWS SDK for Rust items efficiently by minimizing unnecessary cloning."
 toc: true
 toc_label: "Table of Contents"
 ---
