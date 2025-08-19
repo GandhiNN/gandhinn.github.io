@@ -178,9 +178,32 @@ To avoid extra heap allocation for the cloned `r` object, we can use the built-i
 
 Here is the updated code:
 
-{% highlight rust %}
-TBC
+{% highlight bash %}
+// ...
+            roles = x
+                .roles()
+                .into_iter()
+                .map(|r| Role {
+                    path: r.path().to_owned(),
+                    id: r.role_id().to_owned(), 
+                    arn: r.arn().to_owned(),
+                    create_date: r.create_date().to_string(),
+                    max_session_duration: r.max_session_duration.unwrap_or(0),
+                    role_last_used: {
+                        match r.role_last_used() {
+                            Some(last_used) => match last_used.last_used_date {
+                                Some(x) => x.to_string(),
+                                None => String::from("1970-01-01T00:00:00Z"),
+                            },
+                            None => String::from("1970-01-01T00:00:00Z"),
+                        }
+                    },
+                })
+                .collect::<Vec<Role>>();
+// ...
 {% endhighlight %}
+
+The code will compile and produce the same results as it was before. However, how can we be sure that the updated code consumes less allocation than the previous version?
 
 # Profiling memory allocation in Rust using `Heaptrack`
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
