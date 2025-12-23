@@ -42,7 +42,7 @@ athena-shell
 
 {% endhighlight %}
 
-First, let's set our crate dependencies in Cargo.toml:
+Then let's set our crate dependencies in Cargo.toml:
 
 {% highlight yaml %}
 
@@ -59,12 +59,11 @@ tokio = { version = "1.48", features = ["full"] }
 
 {% endhighlight %}
 
-TBC
-
 ## Implementation
 
 ### Creating AWS SDK Config Builder
 
+The AWS SDK for Rust requires a configuration object that contains credentials, region, and other settings to authenticate and route API calls. We'll create a reusable config builder using AWS credential file to set up the necessary configuration to build our Athena client.
 
 ## Usage Examples
 
