@@ -11,10 +11,12 @@ excerpt: "This post explores how to handle AWS SDK for Rust items efficiently by
 toc: true
 toc_label: "Table of Contents"
 ---
-# Overview
+## Overview
+
 I was building an audit tool designed to programmatically retrieve key attributes related to IAM access keys. This includes identifying the users associated with each key pair, determining whether the keys are active or inactive, and capturing metadata such as creation dates and last used timestamps. The goal was to streamline visibility into access key usage across the environment.  
 
-# Using `clone()` everywhere 
+## Using `clone()` everywhere  
+
 I began by defining a custom type to capture the necessary information:
 
 {% highlight rust %}
@@ -79,7 +81,7 @@ The Rust compiler will throw an error:
 cannot move out of r.role_id which is behind a shared reference.
 {% endhighlight %}
 
-The error message indicates that `r` is of type `&aws_sdk_iam::types::Role`, meaning it's a shared reference to a `Role` struct. When I first access the path field using the dot (.) operator, Rust automatically dereferences `r` to retrieve the value. However, on subsequent access, such as retrieving `role_id`, the compiler throws an error because the original reference has already been dereferenced, and Rust's borrowing rules prevent reusing it in that context. 
+The error message indicates that `r` is of type `&aws_sdk_iam::types::Role`, meaning it's a shared reference to a `Role` struct. When I first access the path field using the dot (.) operator, Rust automatically dereferences `r` to retrieve the value. However, on subsequent access, such as retrieving `role_id`, the compiler throws an error because the original reference has already been dereferenced, and Rust's borrowing rules prevent reusing it in that context.  
 
 One of the compiler's suggestions to resolve the issue is to clone the value of `r`. While this might seem like a quick fix, it's easy to fall into the trap of doing something like the following, without fully considering the impact on memory usage and performance:
 
@@ -110,9 +112,9 @@ One of the compiler's suggestions to resolve the issue is to clone the value of 
 
 With these changes, the code now compiles successfully. However, it introduces additional memory allocations, as we're cloning the entire `r` object each time we access one of its attributes to populate our custom `Role` struct. While functionally correct, this approach can be inefficient—especially in scenarios where performance and memory usage are critical.
 
-Rust’s powerful RAII (Resource Acquisition Is Initialization) paradigm offers robust memory management capabilities. However, since RAM remains a finite resource, it's crucial to stay vigilant and intentional about how memory is allocated and used, especially in performance-critical applications. Understanding and optimizing allocation patterns can make a significant difference in overall efficiency. 
+Rust’s powerful RAII (Resource Acquisition Is Initialization) paradigm offers robust memory management capabilities. However, since RAM remains a finite resource, it's crucial to stay vigilant and intentional about how memory is allocated and used, especially in performance-critical applications. Understanding and optimizing allocation patterns can make a significant difference in overall efficiency.  
 
-Frequent use of the `clone()` operation is often a red flag when it comes to efficient memory management. For instance, if the `r` object is 50 KB in size, cloning it effectively doubles the memory footprint to 100 KB at runtime. In a concurrent environment handling 1,000 `r` objects simultaneously, this could result in an additional 100 MB of memory allocation per second—quickly adding up and potentially impacting system performance. 
+Frequent use of the `clone()` operation is often a red flag when it comes to efficient memory management. For instance, if the `r` object is 50 KB in size, cloning it effectively doubles the memory footprint to 100 KB at runtime. In a concurrent environment handling 1,000 `r` objects simultaneously, this could result in an additional 100 MB of memory allocation per second—quickly adding up and potentially impacting system performance.  
 
 Let's take a step back and RTFM from AWS SDK for Rust documentation.
 
@@ -120,6 +122,7 @@ Let's take a step back and RTFM from AWS SDK for Rust documentation.
 {: .notice}
 
 ## Common Type Definition in AWS SDK for Rust
+
 Most of the structs that you will see in AWS SDK for Rust usually will have the following type definition. For example, the following snippet is the definition `Role` struct in the `aws_sdk_iam` crate:
 
 {% highlight rust %}
@@ -156,11 +159,13 @@ impl Role {
 {% endhighlight %}
 
 ## What is `impl` in Rust?
+
 As per Rust official documentation, `impl` is "a keyword which defines implementations of functionality for a type, or a type implementing some functionality."
 
 There are two uses of the `impl` keyword:
-1. An `impl Trait` which can be used to designate a type that implements a trait called `Trait`.
-2. An `impl` block which is used to implement some functionality for a type => **This is what we'll be focusing on this post**.
+
+1. An `impl Trait` which can be used to designate a type that implements a trait called `Trait`
+2. An `impl` block which is used to implement some functionality for a type => **This is what we'll be focusing on this post**
 
 In Rust, an implementation consists of definitions of functions and constants. A function defined in an `impl` block can be:
 
@@ -173,7 +178,8 @@ In the AWS SDK for Rust, most items or structs typically come with a consistent 
 **Notice:** The RTFM Section Ends.
 {: .notice}
 
-# Reduce Allocations with Built-In Accessors
+## Reduce Allocations with Built-In Accessors
+
 To avoid unnecessary heap allocations when cloning the r object, it's more efficient to utilize the built-in methods provided by the `aws_sdk_iam::Role` struct. These methods accept a reference to the struct (`&self`) and return a reference to the desired field, eliminating the need for cloning. For instance, calling `role_id(&self)` returns a `&str` that directly references the value of the `role_id` field, streamlining memory usage without sacrificing readability.
 
 Here is the updated code:
@@ -185,7 +191,7 @@ Here is the updated code:
                 .into_iter()
                 .map(|r| Role {
                     path: r.path().to_owned(),
-                    id: r.role_id().to_owned(), 
+                    id: r.role_id().to_owned(),  
                     arn: r.arn().to_owned(),
                     create_date: r.create_date().to_string(),
                     max_session_duration: r.max_session_duration.unwrap_or(0),
@@ -205,7 +211,8 @@ Here is the updated code:
 
 While the updated code still compiles successfully and produces the same output as before, the real question is: does it actually reduce memory allocations compared to the previous version? To validate this improvement, we need to go beyond functional correctness and examine the runtime behavior more closely.
 
-# Profiling Memory Allocation in Rust Using `Heaptrack`
+## Profiling Memory Allocation in Rust Using `Heaptrack`
+
 [Heaptrack](https://github.com/KDE/heaptrack/blob/master/README.md) is a heap memory profiler for Linux.
 
 Heaptrack monitors all memory allocations and enriches them with stack traces, providing key insights such as memory footprint, leaks, allocation hot spots, and transient allocations.
@@ -213,7 +220,7 @@ Heaptrack monitors all memory allocations and enriches them with stack traces, p
 Heaptrack is split into two parts:
 
 1. The data collector, i.e. the `heaptrack` binary itself.
-2. The analyzer GUI called `heaptrack_gui` (it needs Qt5 and KF5 dependencies; make sure both are available in your OS) 
+2. The analyzer GUI called `heaptrack_gui` (it needs Qt5 and KF5 dependencies; make sure both are available in your OS)  
 
 On Ubuntu (22.04) Heaptrack can be installed via `apt`:
 
@@ -235,7 +242,7 @@ heaptrack target/release/iam_role_with_cloning
 heaptrack target/release/iam_role_without_cloning
 {% endhighlight %}
 
-Afterwards, heaptrack writes gzipped result files for each profiled binary and then we can inspect and visualize the results into graphs using `heaptrack_gui`. 
+Afterwards, heaptrack writes gzipped result files for each profiled binary and then we can inspect and visualize the results into graphs using `heaptrack_gui`.  
 
 An example usage looks like this:
 
@@ -246,11 +253,13 @@ heaptrack_gui heaptrack.cargo.8423.zst
 
 In my analysis, I focused on the "Summary" and "Allocations" tabs to monitor memory usage trends over time. One key insight was that leveraging clone() significantly impacts memory behavior, specifically, it nearly doubles the number of allocations during runtime. This observation highlights the importance of being mindful about cloning operations, especially in performance-sensitive contexts.
 
-|--------------+-----------------|
+|--------------+-----------------|  
 | With Cloning | Without Cloning |  
 |:------------:|:---------------:|  
+
 |![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_with_cloning-summary-20250815.png){: .align-center}|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_with_cloning-20250815.png){: .align-center}|
 |![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_without_cloning-summary-20250815.png){: .align-center}|![image-center]({{ site.url }}{{ site.baseurl }}/assets/images/posts/2025-08-18-reducing-cloning-overhead-in-aws-sdk-for-rust/heaptrack_without_cloning-20250815.png){: .align-center}|
 
-# Conclusion
+## Conclusion
+
 As we've seen, managing memory allocations in Rust, especially when working with the AWS SDK, isn't as daunting as it might seem. Many SDK types offer convenient accessor methods that let us retrieve values without cloning entire objects, making our code both cleaner and more efficient. These techniques aren't limited to IAM; they apply equally well to other AWS services like Glue and S3. And when deeper analysis is needed, tools like Heaptrack provide valuable insights into runtime behavior. In my case, it clearly showed how excessive use of `clone()` can lead to significant memory overhead. And that's it for now! Stay tuned for my future posts in the future!
