@@ -132,7 +132,7 @@ pub type Result<T> = std::result::Result<T, ShellError>;
 
 Notice that we create a type alias `Result<T>`. We do this in order to simplifies error handling in our codebase. For example, instead of writing `std::result::Result<T, AthenaError>`, we can just write `Result<T>`. We also provide consistency in our code because now all the functions in our project that return results will use the same error type (`AthenaError`) by default.
 
-### Creating AWS SDK Config Builder 
+### Creating AWS SDK Config Builder  
 
 The AWS SDK for Rust requires a configuration object that contains credentials, region, and other settings to authenticate and route API calls. We'll create a reusable config builder using AWS credential file to set up the necessary configuration to build our Athena client. Then, we'll create an `AwsClient` enum that encapsulates AWS configuration loading and provides a clean interface for instantiating the clients.
 
