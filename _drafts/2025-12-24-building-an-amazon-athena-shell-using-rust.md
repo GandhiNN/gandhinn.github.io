@@ -263,19 +263,17 @@ TBC
 
 ### Creating Basic REPL
 
-Next, we scaffold a basic Read-Eval-Print-Loop where users can input commands to be executed towards Athena Services.
-This basic REPL has one quirk: If users cancel their input during multi line input session, they need to press ENTER twice to return to the normal prompt. I suspect this is because of the imperfect signal handling (when receiving Ctrl-C input mixed with the ongoing stdin) in my `tokio::select!` block. Let me know if you have suggestions to handle this situation! 
+Next, we scaffold a basic Read-Eval-Print-Loop where users can input commands to be executed towards Athena Services. Since we are working with async runtime, we have to use the non-blocking IO to handle `stdin` and `SIGINT` with the combination of `tokio::io` traits and `tokio::select!` macro.
+
+This basic REPL has one quirk: If users cancel their input during multi line input session, they need to press ENTER twice to return to the normal prompt. I suspect this is because of the imperfect signal handling (when receiving Ctrl-C input mixed with the ongoing stdin) in my `tokio::select!` block. Let me know if you have suggestions to fix this issue!  
+
+We will add AWS functionalities later.
 
 {% highlight rust %}
-#![allow(unused)]
 use crate::error::Result;
-use aws_sdk_athena::Client as AthenaClient;
 use std::io::Write;
-use std::io::{self, BufReader};
-use std::sync::mpsc;
-use std::thread;
+use std::io::{self};
 use tokio::io::{AsyncBufReadExt, AsyncReadExt};
-use tokio::io::{BufReader as TokioBufReader, Stdin};
 
 pub struct Repl {
     prompt: String, // prompt chars
