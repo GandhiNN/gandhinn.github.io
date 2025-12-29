@@ -130,4 +130,4 @@ Developing this simple bash function has been a cool side learning quest for me.
 
 This concept can also be applied to other languages and build systems as well. For example, in Python projects for `.pyc` and `__pycache__` cleanup.  
 
-I hope this tool can be beneficial in your own Rust development workflow. It's always a good feeling to have a spacious storage and fast builds!  
+I hope this simple script can be beneficial in your own Rust development workflow. Beacuse you know, it's always a good feeling to have a spacious storage and fast builds!  
