@@ -65,8 +65,69 @@ To reclaim disk space, we can use the `cargo clean` command, which removes artif
 
 ## Solution
 
-TBC
+I created the following alias in my `$HOME/.bash_profile` to automate cleanup across multiple Rust projects. What it does basically are:  
+
+1. Iterates through directories
+2. Identifies valid Rust projects by checking for `Cargo.toml`
+3. Runs `cargo clean` and check for the number of deleted files and bytes
+4. Outputs a pipe-separated report of the cleanup results
+
+Just remember to run the command in your parent directory i.e. `$HOME/study/rust`    
+
+{% highlight bash %}
+cargo_purge()
+{
+        echo "dir|status|removedFiles|size|errMessage"
+        for dir in `ls`
+        do
+                cd ${dir}
+                ls "Cargo.toml" > /dev/null 2>&1
+                lsRetVal=$?
+
+                # Initialize variables
+                removedFiles=0
+                size="0"
+                errMessage="NA"
+
+                if [ $lsRetVal -ne 0 ]; then
+                        status="ERROR"
+                        errMessage="not a cargo project"
+                else
+                        out=$(cargo clean 2>&1) # redirect STDERR TO STDOUT stream to capture `cargo clean` output
+                        status=$(echo ${out} | awk -F ' ' '{print $1}')
+
+                        if [ $status == "Removed" ]; then
+                                status="SUCCESS"
+                                removedFiles=$(echo ${out} | awk -F ' ' '{print $2}')
+                                if [ $removedFiles != "0" ]; then
+                                        size=$(echo ${out} | awk -F ' ' '{print $4}')
+                                fi
+                        else
+                                status="ERROR"
+                                errMessage=$(echo ${out} | awk -F ':' '{print $2}' | xargs) # use xargs to trim whitespace from error messages
+                        fi
+                fi
+
+                echo "${dir}|${status}|${removedFiles}|${size}|${errMessage}"
+                cd ..
+        done
+}
+{% endhighlight %}
+
+Sample output:
+
+{% highlight bash %}
+dir|status|removedFiles|size|errMessage
+ownership-basics|SUCCESS|245|15.2MB|NA
+error-handling|SUCCESS|0|0|NA
+async-programming|ERROR|0|0|not a cargo project
+web-frameworks|SUCCESS|1,234|156.7MB|NA
+{% endhighlight %}
 
 ## Conclusion
 
-TBC
+Developing this simple bash function has been a cool side learning quest for me. I think this idea could be expanded into a Cargo sub-command as well (`cargo clean-recursive`, anyone?)  
+
+This concept can also be applied to other languages and build systems as well. For example, in Python projects for `.pyc` and `__pycache__` cleanup.  
+
+I hope this tool can be beneficial in your own Rust development workflow. It's always a good feeling to have a spacious storage and fast builds!  
