@@ -72,15 +72,15 @@ I created the following alias in my `$HOME/.bash_profile` to automate cleanup ac
 3. Runs `cargo clean` and check for the number of deleted files and bytes
 4. Outputs a pipe-separated report of the cleanup results
 
-Just remember to run the command in your parent directory i.e. `$HOME/study/rust`    
+Just remember to run the command in your parent directory i.e. `$HOME/study/rust`  
 
 {% highlight bash %}
 cargo_purge()
 {
         echo "dir|status|removedFiles|size|errMessage"
-        for dir in `ls`
+        for dir in "$(ls)"
         do
-                cd ${dir}
+                cd "${dir}" # handle directories with whitespaces
                 ls "Cargo.toml" > /dev/null 2>&1
                 lsRetVal=$?
 
@@ -126,8 +126,10 @@ web-frameworks|SUCCESS|1,234|156.7MB|NA
 
 ## Conclusion
 
-Developing this simple bash function has been a cool side learning quest for me. I think this idea could be expanded into a Cargo sub-command as well (`cargo clean-recursive`, anyone?)  
+Developing this simple bash function has been a cool side learning quest for me.
 
-This concept can also be applied to other languages and build systems as well. For example, in Python projects for `.pyc` and `__pycache__` cleanup.  
+I think this concept can also be applied to other languages and build systems as well. For example, in Python projects for `.pyc` and `__pycache__` cleanup.  
 
-I hope this simple script can be beneficial in your own Rust development workflow. Beacuse you know, it's always a good feeling to have a spacious storage and fast builds!  
+Last words, I hope this simple script can be beneficial in your own Rust development workflow. ~~I think this idea could be expanded into a Cargo sub-command as well (`cargo clean-recursive`, anyone?)~~ Apparently the `cargo clean-recursive` subcommand to clean all projects under specified directory already exists: [cargo-clean-recursive](https://crates.io/crates/cargo-clean-recursive), so please use that one instead.  
+  
+With that said, you know it's always a good feeling to have a spacious storage and fast builds!  
