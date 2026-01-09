@@ -78,7 +78,7 @@ Just remember to run the command in your parent directory i.e. `$HOME/study/rust
 cargo_purge()
 {
         echo "dir|status|removedFiles|size|errMessage"
-        for dir in "$(ls)"
+        for dir in $(ls)
         do
                 cd "${dir}" # handle directories with whitespaces
                 ls "Cargo.toml" > /dev/null 2>&1
