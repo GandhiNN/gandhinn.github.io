@@ -19,21 +19,21 @@ toc_label: "Table of Contents"
 
 The settings: A movie cinema which has several theater types/classes: "Regular", "IMAX", or "Premiere" and a ticketing booth that is served by a human / "front desk officers".
 
-The flow is: a customer comes to the front desk saying the name of the movie name he/she wants to watch, the front desk officers map the movie name with the theater it's playing at, then the officers print out the ticket and stamp it with the name of the theater and then give it to the customer (the **hot loop**)
+The flow: A customer come to the front desk saying the name of the movie name he/she wants to watch -> The front desk officers map the movie name with the theater it's playing at -> The front desk officers print out the ticket and stamp it with the name of the theater -> The front desk give the stamped ticket to the customer (the **hot loop**)
 
 #### Approach 1: Type Switch (a.k.a the slow way)
 
 Imagine a situation where for every single order, the front desk officer walks to the back office and asks:
 > "Hey, this movie, is it playing at Regular, IMAX, or Premiere (theater type/class)?"
 
-The back office checks, points to the right theater, then the front office stamps the ticket with the correct theater placement, walks back his/her desk. Repeats for every single customer.
+The back office checks and points to the right theater, then the front office stamps the ticket with the correct theater placement, then he/she goes back to his/her desk. Repeats for every single customer.
 
 With 1000 customers x 3 theater types/classes that's 3000 times the front office asks "where does this film play?"
 
 #### Approach 2: Pre-computed Closures (a.k.a the fast way)
 
 Now imagine the same situation, but now the front desk officer has a cheat sheet of where each film is exactly playing:
-> "The Odyssey always plays in IMAX, Spiderman is playing in Premiere, and Evil Dead is playing at Regular..."
+> "The Odyssey always plays at IMAX, Spiderman is playing at Premiere, and Evil Dead is playing at Regular..."
 
 Now, when serving the customers, the front desk officers does not need to ask anyone, he/she just looks at this cheat sheet and directly stamps the ticket with the correct theater type/class. He/she spent less time questioning, waiting, and thinking.
 
