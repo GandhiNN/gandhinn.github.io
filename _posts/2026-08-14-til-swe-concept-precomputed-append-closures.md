@@ -26,9 +26,9 @@ The flow: A customer come to the front desk saying the name of the movie name he
 Imagine a situation where for every single order, the front desk officer walks to the back office and asks:
 > "Hey, this movie, is it playing at Regular, IMAX, or Premiere (theater type/class)?"
 
-The back office checks and points to the right theater, then the front office stamps the ticket with the correct theater placement, then he/she goes back to his/her desk. Repeats for every single customer.
+The back office checks and points to the right theater, then the front office stamps the ticket with the correct theater placement, then he/she goes back to his/her desk. Repeats for every single customer (For the sake of simplicity, let's assume that the front desk officers does not retain any memory i.e. he/she forgots the mapping of film and theater after serving a customer.)
 
-With 1000 customers x 3 theater types/classes that's 3000 times the front office asks "where does this film play?"
+With 1000 customers, that's 1000 times the front office needs to walk to the back office and asking: "where does this film play?"
 
 #### Approach 2: Pre-computed Closures (a.k.a the fast way)
 
@@ -39,9 +39,13 @@ Now, when serving the customers, the front desk officers does not need to ask an
 
 In this case, the cheat sheet is the **closure**. It has the answer ("film A is playing in IMAX, film B is playing in Premiere, etc") at "setup time", so the hot loop never has to figure it out again, saving a lot of time in the process.
 
+The front desk officers will still need to check 1000 times, but the difference this time is it's much easier for them to check which theater a film is playing at.
+
 ### Why does this matter?
 
-Imagine a scenario where you have to do ETL of raw data from an MS-SQL server and save the result sets into Parquet files. Having the cheat sheet will help the computation process ("this column is an int: use the int builder, this column is a string: use the string builder") at ETL setup time so the hot loop (ingest raw data -> casting types into proper Arrow types -> save to disk as Parquet files) never has to figure the type mapping again.
+This is the idea of a pre-computed append closures: We create a function (closure) that **has less work to do every time it's being called**.
+
+Imagine a scenario where you have to do ETL of raw data from an MS-SQL server and save the result sets into Parquet files. Having the "cheat sheet" will help the computation process ("this column is an int: use the int builder, this column is a string: use the string builder") at ETL setup time so the hot loop (ingest raw data -> casting types into proper Arrow types -> save to disk as Parquet files) never has to figure the type mapping again.
 
 To create this cheat sheet, we can run a query to probe the schema once in the beginning of the ETL phase (i.e. executing query `SELECT TOP 0 * FROM (<table_name>) AS _probe` in MS-SQL and parse the result set into type mapping)
 
