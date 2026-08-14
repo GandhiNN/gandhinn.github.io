@@ -47,7 +47,7 @@ This is the idea of a pre-computed append closures: We create a function (closur
 
 Imagine a scenario where you have to do ETL of raw data from an MS-SQL server and save the result sets into Parquet files. Having the "cheat sheet" will help the computation process ("this column is an int: use the int builder, this column is a string: use the string builder") at ETL setup time so the hot loop (ingest raw data -> casting types into proper Arrow types -> save to disk as Parquet files) never has to figure the type mapping again.
 
-To create this cheat sheet, we can run a query to probe the schema once in the beginning of the ETL phase (i.e. executing query `SELECT TOP 0 * FROM (<table_name>) AS _probe` in MS-SQL and parse the result set into type mapping)
+The simplest cheat sheet is having a dictionary of column and its data type: We can run a query to probe the schema once in the beginning of the ETL phase (i.e. executing query `SELECT TOP 0 * FROM (<table_name>) AS _probe` in MS-SQL and parse the result set into type mapping)
 
 This means improved performance: CPU is the main actor on this process. CPUs work like an assembly line, they start processing the next instruction before the current one finishes (pipelining). But when they hit a decision point ("which type is this?"), they have to guess which path to take. If they guess wrong, they throw away the work and start over (pipeline stall).
 
