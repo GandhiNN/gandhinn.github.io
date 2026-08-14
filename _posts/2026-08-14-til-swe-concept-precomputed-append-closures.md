@@ -39,7 +39,7 @@ Now, when serving the customers, the front desk officers does not need to ask an
 
 In this case, the cheat sheet is the **closure**. It has the answer ("film A is playing in IMAX, film B is playing in Premiere, etc") at "setup time", so the hot loop never has to figure it out again, saving a lot of time in the process.
 
-The front desk officers will still need to check 1000 times, but the difference this time is it's much easier for them to check which theater a film is playing at.
+The front desk officers will still need to check 1000 times, but the difference this time is it's much easier for them to check which theater a film is playing at (they no longer have to walk to the back office every single time they serve a customer).
 
 ### Why does this matter?
 
@@ -54,183 +54,120 @@ This means improved performance: CPU is the main actor on this process. CPUs wor
 - When using the **Type switch** approach: The decision changes every column (int, string, float, int, string...). The CPU guesses wrong more often -> more pipeline stalls.
 - When using the **Pre-Computed Closures** approach: The only decision is checking whether the cell is null, and the answer most likely is "no". The CPU guesses correctly more often -> the pipeline is flowing smoother.
 
-### Runnable Code
+### Code
 
 {% highlight python %}
-"""
-Pre-computed closures concept demo in Python.
-
-In Python the "closure" is just a bound method or lambda that captures
-the typed handler, avoiding dict/if-else dispatch in the hot loop.
-"""
-
 import time
-import random
-import string
 
-NUM_ROWS = 500_000
-NUM_COLS = 10
-COL_TYPES = ["int", "str", "float", "int", "str", "float", "int", "str", "int", "float"]
+# Simulating an expensive setup work
+def create_converter(schema):
+    time.sleep(0.01) # simulate 10ms of work
 
- Simulate builders
+    def converter(batch):
+        return [x * 2 for x in batch]
+    
+    return converter
 
-class IntBuilder:
-    def __init__(self):
-        self.values = []
+# 1. Without pre-computation
 
-    def append(self, v):
-        self.values.append(v)
+def append_without_precompute(batch):
+    schema = {"type": "int"}
+    converter = create_converter(schema)
 
-    def append_null(self):
-        self.values.append(None)
+    result = converter(batch)
+    return result
 
+# 2. With pre-computed closure
 
-class StrBuilder:
-    def __init__(self):
-        self.values = []
+def make_appender():
+    schema = {"type": "int"}
 
-    def append(self, v):
-        self.values.append(v)
+    # Expensive setup work which happens ONCE
+    converter = create_converter(schema)
 
-    def append_null(self):
-        self.values.append(None)
+    def append(batch):
+        result = converter(batch)
+        return result
+    
+    return append
 
+# Testing
 
-class FloatBuilder:
-    def __init__(self):
-        self.values = []
+batches = [
+    list(range(100)),
+    list(range(100)),
+    list(range(100)),
+    list(range(100)),
+    list(range(100)),
+]
 
-    def append(self, v):
-        self.values.append(v)
+# Without pre-computation
+start = time.perf_counter()
 
-    def append_null(self):
-        self.values.append(None)
+for batch in batches:
+    append_without_precompute(batch)
 
+without_time = time.perf_counter() - start
 
-# Generate fake rows
+# With pre-computation
+start = time.perf_counter()
 
+append = make_appender()
 
-def generate_rows():
-    rows = []
-    for _ in range(NUM_ROWS):
-        row = []
-        for ct in COL_TYPES:
-            if random.randint(0, 19) == 0:
-                row.append(None)
-            elif ct == "int":
-                row.append(random.randint(0, 1_000_000))
-            elif ct == "str":
-                row.append(
-                    "val_" + "".join(random.choices(string.ascii_lowercase, k=5))
-                )
-            else:
-                row.append(random.random() * 1000)
-        rows.append(row)
-    return rows
+for batch in batches:
+    append(batch)
 
+with_time = time.perf_counter() - start
 
-# APPROACH 1: if/elif dispatch in hot loop
+print(f"Without pre-computation :   {without_time:.4f} seconds")
+print(f"With pre-computation    :   {with_time:.4f} seconds")
 
-
-def ingest_with_dispatch(rows, col_types):
-    builders = []
-    for ct in col_types:
-        if ct == "int":
-            builders.append(IntBuilder())
-        elif ct == "str":
-            builders.append(StrBuilder())
-        else:
-            builders.append(FloatBuilder())
-
-    for row in rows:
-        for i, val in enumerate(row):
-            if val is None:
-                builders[i].append_null()
-            elif col_types[i] == "int":
-                builders[i].append(val)
-            elif col_types[i] == "str":
-                builders[i].append(val)
-            elif col_types[i] == "float":
-                builders[i].append(val)
-
-    return builders
-
-
-# APPROACH 2: Pre-Computed Closures
-
-
-def build_appenders(col_types):
-    """Resolve type ONCE, return a list of callables."""
-    builders = []
-    appenders = []
-
-    for ct in col_types:
-        if ct == "int":
-            b = IntBuilder()
-        elif ct == "str":
-            b = StrBuilder()
-        else:
-            b = FloatBuilder()
-        builders.append(b)
-
-        # Capture `b` in a closure - no type check needed later
-        append = b.append
-        append_null = b.append_null
-        appenders.append((append, append_null))
-
-    return builders, appenders
-
-
-def ingest_with_closures(rows, appenders):
-    for row in rows:
-        for i, val in enumerate(row):
-            if val is None:
-                appenders[i][1]()  # append_null, already bound
-            else:
-                appenders[i][0](val)  # append, already bound
-
-
-# Main
-
-if __name__ == "__main__":
-    print(
-        f"Generating {NUM_ROWS * NUM_COLS // 1_000_000}M cells ({NUM_ROWS} rows x {NUM_COLS} cols)..."
-    )
-    rows = generate_rows()
-
-    # Approach 1
-    start = time.perf_counter()
-    ingest_with_dispatch(rows, COL_TYPES)
-    dispatch_dur = time.perf_counter() - start
-
-    # Approach 2
-    builders, appenders = build_appenders(COL_TYPES)
-    start = time.perf_counter()
-    ingest_with_closures(rows, appenders)
-    closure_dur = time.perf_counter() - start
-
-    cells = NUM_ROWS * NUM_COLS
-    print()
-    print(
-        f"if/elif dispatch: {dispatch_dur:.3f}s ({cells / dispatch_dur:,.0f} cells/sec)"
-    )
-    print(
-        f"Pre-bound methods: {closure_dur:.3f}s ({cells / closure_dur:,.0f} cells/sec)"
-    )
-    print(f"Speedup: {dispatch_dur / closure_dur:.2f}x")
 {% endhighlight %}
 
-This is the output of the above code when running in my local:
+#### Under the hood
 
-```bash
-$ python main.py 
-Generating 5M cells (500000 rows x 10 cols)...
+The without pre-computation loop:
 
-if/elif dispatch: 0.590s (8,468,672 cells/sec)
-Pre-bound methods: 0.497s (10,059,516 cells/sec)
-Speedup: 1.19x
+```python
+for batch in batches:
+        append_without_precompute(batch)
 ```
 
-As you see, there's a modest speedup which I think is mostly due to Python's interpreter overhead i.e. both approaches still go through the same slow interpreter loop. The closure approach removes some dict lookups and string comparisons but they are still a small fraction of the total cost.
+for each iteration, it does the following:
 
-But imagine what will happen if we use compiled language such as Go or Rust. I guess the improvements will be much more dramatic because of the optimizations that might be done by the compiler.
+```bash
+batch
+ ↓
+create_converter() # expensive operation
+ ↓
+convert
+ ↓
+return
+```
+
+So for 5 batches we will have 5 converter creations.
+
+Now, the loop using pre-computed closure:
+
+```python
+for batch in batches:
+    append(batch)
+```
+
+we only created the converter once:
+
+```bash
+make_appender()
+ ↓
+create_converter() # one time, converter is persisted
+ ↓
+append(batch)
+append(batch)
+append(batch)
+append(batch)
+append(batch)
+```
+
+It executes the same number of `append(batch)` calls, but it has less work per call, because the closure is carrying within itself the prepared `converter` logic.
+
+Now, imagine if we replace our `create_converter()` closure creator with something that has functions like: schema resolution, column mapping, encoder selection, compression selection, or writer setup. We could save on these expensive operations by carrying them within the closure that we are applying to each batches of rows. It could save some computation time, making our ETL runs faster.
