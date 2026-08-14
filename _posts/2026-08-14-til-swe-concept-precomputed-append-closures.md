@@ -52,7 +52,7 @@ This means improved performance: CPU is the main actor on this process. CPUs wor
 
 ### Runnable Code
 
-```python
+{% highlight python %}
 """
 Pre-computed closures concept demo in Python.
 
@@ -68,8 +68,7 @@ NUM_ROWS = 500_000
 NUM_COLS = 10
 COL_TYPES = ["int", "str", "float", "int", "str", "float", "int", "str", "int", "float"]
 
-# Simulate builders
-
+ Simulate builders
 
 class IntBuilder:
     def __init__(self):
@@ -215,5 +214,4 @@ if __name__ == "__main__":
         f"Pre-bound methods: {closure_dur:.3f}s ({cells / closure_dur:,.0f} cells/sec)"
     )
     print(f"Speedup: {dispatch_dur / closure_dur:.2f}x")
-
-```
+{% endhighlight %}
