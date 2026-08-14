@@ -1,5 +1,5 @@
 ---
-title:  "TIL - Pre-Computed Append Closures and its Impact on Performance of your Code"
+title:  "TIL - Pre-Computed Append Closures and its Impact on Performance of Your Code"
 seo_title: "til pre-computed append closures and its impact on performance of your code"
 seo_description: "today i learned how using pre-computed append closures can have good performance impact in your code"
 date:   2026-08-14 00:00:00 +0700
