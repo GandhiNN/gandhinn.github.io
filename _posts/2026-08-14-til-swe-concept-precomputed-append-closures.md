@@ -41,7 +41,7 @@ In this case, the cheat sheet is the **closure**. It has the answer ("film A is 
 
 ### Why does this matter?
 
-Imagine a scenario where you have to do ETL of raw data from an MS-SQL server and save the result sets into Parquet files. Having the cheat sheet will help the computation process ("this column is an int: use the int builder, this column is a string: use the string builder") at ETL setup time so the hot loop (ingest raw data -> casting types into proper Arrow types ->-> save to disk as Parquet files) never has to figure the type mapping again.
+Imagine a scenario where you have to do ETL of raw data from an MS-SQL server and save the result sets into Parquet files. Having the cheat sheet will help the computation process ("this column is an int: use the int builder, this column is a string: use the string builder") at ETL setup time so the hot loop (ingest raw data -> casting types into proper Arrow types -> save to disk as Parquet files) never has to figure the type mapping again.
 
 To create this cheat sheet, we can run a query to probe the schema once in the beginning of the ETL phase (i.e. executing query `SELECT TOP 0 * FROM (<table_name>) AS _probe` in MS-SQL and parse the result set into type mapping)
 
@@ -215,3 +215,18 @@ if __name__ == "__main__":
     )
     print(f"Speedup: {dispatch_dur / closure_dur:.2f}x")
 {% endhighlight %}
+
+This is the output of the above code when running in my local:
+
+```bash
+$ python main.py 
+Generating 5M cells (500000 rows x 10 cols)...
+
+if/elif dispatch: 0.590s (8,468,672 cells/sec)
+Pre-bound methods: 0.497s (10,059,516 cells/sec)
+Speedup: 1.19x
+```
+
+As you see, there's a modest speedup which I think is mostly due to Python's interpreter overhead i.e. both approaches still go through the same slow interpreter loop. The closure approach removes some dict lookups and string comparisons but they are still a small fraction of the total cost.
+
+But imagine what will happen if we use compiled language such as Go or Rust. I guess the improvements will be much more dramatic because of the optimizations that might be done by the compiler.
