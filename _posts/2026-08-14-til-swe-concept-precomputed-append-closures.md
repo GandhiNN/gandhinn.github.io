@@ -124,18 +124,18 @@ print(f"With pre-computation    :   {with_time:.4f} seconds")
 
 {% endhighlight %}
 
-#### Under the hood
+## Under the hood
 
 The without pre-computation loop:
 
-```python
+{% highlight python %}
 for batch in batches:
         append_without_precompute(batch)
-```
+{% endhighlight %}
 
 for each iteration, it does the following:
 
-```bash
+{% highlight bash %}
 batch
  ↓
 create_converter() # expensive operation
@@ -143,20 +143,20 @@ create_converter() # expensive operation
 convert
  ↓
 return
-```
+{% endhighlight %}
 
 So for 5 batches we will have 5 converter creations.
 
 Now, the loop using pre-computed closure:
 
-```python
+{% highlight python %}
 for batch in batches:
     append(batch)
-```
+{% endhighlight }
 
 we only created the converter once:
 
-```bash
+{% highlight bash %}
 make_appender()
  ↓
 create_converter() # one time, converter is persisted
@@ -166,7 +166,7 @@ append(batch)
 append(batch)
 append(batch)
 append(batch)
-```
+{% endhighlight %}
 
 It executes the same number of `append(batch)` calls, but it has less work per call, because the closure is carrying within itself the prepared `converter` logic.
 
